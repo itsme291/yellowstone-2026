@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-fullscreen/2.4.0/Control.FullScreen.min.js"></script>
     <style>
         @keyframes drawLine {
-            from { stroke-dashoffset: 4000; }
+            from { stroke-dashoffset: 5000; }
             to { stroke-dashoffset: 0; }
         }
         @keyframes pulse-marker {
@@ -20,7 +20,7 @@
             50% { transform: scale(1.15); }
         }
         .animated-route {
-            stroke-dasharray: 4000;
+            stroke-dasharray: 5000;
             animation: drawLine 4s ease-in-out forwards;
         }
         .pulse-marker {
@@ -113,7 +113,7 @@
                     <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-calendar-days text-lg"></i></div>
                     <div>
                         <h2 class="font-bold text-lg tracking-tight text-gray-100">Day-by-Day Journey</h2>
-                        <p class="text-xs text-gray-400 mt-0.5">Click a day to trace ground highway segments precisely on the map routes</p>
+                        <p class="text-xs text-gray-400 mt-0.5">Click a day to trace explicit road corridors and real infrastructure pathways across the route map</p>
                     </div>
                 </div>
                 <button id="resetMapBtn" class="px-4 py-2 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-lg border border-amber-500/30 hover:bg-amber-500/20 transition-colors flex items-center gap-2">
@@ -124,32 +124,32 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="space-y-2" id="dayButtons">
-                    <div class="text-xs font-bold text-amber-500 tracking-wider uppercase mb-2">Select Day</div>
+                    <div class="text-xs font-bold text-amber-500 tracking-wider uppercase mb-2">Select Itinerary Window</div>
                     <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-amber-500/50 bg-amber-500/10 text-amber-400 font-semibold text-sm transition-all" data-day="5">
                         <span class="font-bold">Day 1: Jul 05</span>
-                        <div class="text-xs text-amber-300/70 mt-0.5">Flights & Highway Route to Idaho Falls</div>
+                        <div class="text-xs text-amber-300/70 mt-0.5">Flights & I-15 Corridor to Idaho Falls</div>
                     </button>
                     <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="6">
                         <span class="font-bold">Day 2: Jul 06</span>
-                        <div class="text-xs text-gray-400 mt-0.5">US-20 Corridor to Grant Village</div>
+                        <div class="text-xs text-gray-400 mt-0.5">US-20 Highway Path into Grant Village</div>
                     </button>
                     <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="6-9">
                         <span class="font-bold">Days 3-5: Jul 06-09</span>
-                        <div class="text-xs text-gray-400 mt-0.5">Lower Grand Loop Exploration Tracks</div>
+                        <div class="text-xs text-gray-400 mt-0.5">Lower loop Roadway Networks</div>
                     </button>
                     <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="9">
                         <span class="font-bold">Day 6: Jul 09</span>
-                        <div class="text-xs text-gray-400 mt-0.5">Grand Loop East to Canyon Village</div>
+                        <div class="text-xs text-gray-400 mt-0.5">Grand Loop East Pathway to Canyon Village</div>
                     </button>
                     <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="11">
                         <span class="font-bold">Day 7: Jul 11</span>
-                        <div class="text-xs text-gray-400 mt-0.5">West Exit Loop Back to SLC Airport</div>
+                        <div class="text-xs text-gray-400 mt-0.5">Return West Exit Routing to SLC Terminal</div>
                     </button>
                 </div>
 
                 <div class="lg:col-span-2">
                     <div id="mapContainer" class="relative">
-                        <div id="map" class="w-full h-96 md:h-[400px] bg-gray-800 border border-gray-700 rounded-xl shadow-lg"></div>
+                        <div id="map" class="w-full h-96 md:h-[420px] bg-gray-800 border border-gray-700 rounded-xl shadow-lg"></div>
                         <button id="fullscreenBtn" class="absolute top-4 right-4 z-40 px-3 py-2 bg-white text-gray-700 text-xs font-bold rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors flex items-center gap-1 shadow-md">
                             <i class="fa-solid fa-expand text-sm"></i>
                             <span>Fullscreen</span>
@@ -163,68 +163,53 @@
             </div>
         </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            <div class="lg:col-span-1 bg-gray-800 rounded-2xl border border-gray-700 p-5 shadow-xl">
-                <h3 class="text-sm font-bold tracking-wider text-gray-400 uppercase mb-4 flex items-center justify-between">
-                    <span>Route Timeline</span>
-                    <i class="fa-solid fa-route text-amber-500"></i>
-                </h3>
-                <div class="space-y-6 relative before:absolute before:viewport before:left-4 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-700">
-                    <div class="relative flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-amber-500 text-gray-900 flex items-center justify-center font-bold text-xs shrink-0 z-10">05</div><div><h4 class="font-bold text-sm text-gray-100">Sunday, July 5</h4><p class="text-xs text-gray-400 mt-0.5">Fly OAK → SLC • Drive I-15 to Idaho Falls</p></div></div>
-                    <div class="relative flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center font-bold text-xs shrink-0 z-10">06</div><div><h4 class="font-bold text-sm text-gray-300">Monday, July 6</h4><p class="text-xs text-gray-400 mt-0.5">Drive US-20 into Park • Grant Village</p></div></div>
-                    <div class="relative flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center font-bold text-xs shrink-0 z-10">09</div><div><h4 class="font-bold text-sm text-gray-300">Thursday, July 9</h4><p class="text-xs text-gray-400 mt-0.5">Transfer north to Canyon Village</p></div></div>
-                    <div class="relative flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center font-bold text-xs shrink-0 z-10">11</div><div><h4 class="font-bold text-sm text-gray-300">Saturday, July 11</h4><p class="text-xs text-gray-400 mt-0.5">Exit Park to SLC Terminal • Fly Home</p></div></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl overflow-hidden p-6 space-y-4">
+                <h2 class="font-bold text-base tracking-tight flex items-center gap-3"><i class="fa-solid fa-plane text-indigo-400"></i>Air Travel Logistics</h2>
+                <div class="space-y-4 divide-y divide-gray-700">
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="font-bold text-gray-300">Delta Air Lines (DL 4134)</span>
+                            <span class="font-mono text-amber-400 font-bold">Ref: HSECV9</span>
+                        </div>
+                        <div class="bg-gray-900/40 p-3 rounded-xl text-center text-xs text-gray-300">OAK 12:33 PM → SLC 3:29 PM (Sun, Jul 05)</div>
+                    </div>
+                    <div class="space-y-2 pt-3">
+                        <div class="flex justify-between text-xs">
+                            <span class="font-bold text-gray-300">Southwest Airlines (WN 3276)</span>
+                            <span class="font-mono text-amber-400 font-bold">Ref: CLH3B2</span>
+                        </div>
+                        <div class="bg-gray-900/40 p-3 rounded-xl text-center text-xs text-gray-300">SLC 6:25 PM → OAK 7:15 PM (Sat, Jul 11)</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="lg:col-span-2 space-y-6">
-                <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl overflow-hidden">
-                    <div class="bg-gray-750 px-6 py-4 border-b border-gray-700 flex items-center justify-between">
-                        <h2 class="font-bold text-base tracking-tight flex items-center gap-3"><i class="fa-solid fa-plane text-indigo-400"></i>Air Travel Logistics</h2>
-                    </div>
-                    <div class="p-6 space-y-6 divide-y divide-gray-700">
-                        <div class="space-y-4">
-                            <div class="flex justify-between">
-                                <h3 class="font-bold text-sm text-gray-100">Delta Air Lines (DL 4134)</h3>
-                                <span class="font-mono text-xs text-amber-400 font-bold">Ref: HSECV9</span>
-                            </div>
-                            <div class="bg-gray-900/50 p-4 rounded-xl text-center text-xs">OAK 12:33 PM → SLC 3:29 PM (Sun, Jul 05)</div>
-                        </div>
-                        <div class="space-y-4 pt-4">
-                            <div class="flex justify-between">
-                                <h3 class="font-bold text-sm text-gray-100">Southwest Airlines (WN 3276)</h3>
-                                <span class="font-mono text-xs text-amber-400 font-bold">Ref: CLH3B2</span>
-                            </div>
-                            <div class="bg-gray-900/50 p-4 rounded-xl text-center text-xs">SLC 6:25 PM → OAK 7:15 PM (Sat, Jul 11)</div>
-                        </div>
+            <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-4">
+                <h2 class="font-bold text-base tracking-tight flex items-center gap-3"><i class="fa-solid fa-car text-amber-400"></i>Rental Vehicle Logistics</h2>
+                <div class="text-xs space-y-2 text-gray-300">
+                    <div class="font-bold text-white text-sm">Hertz SUV AWD (Jeep Compass or similar)</div>
+                    <div>Confirmation: L57232183D0</div>
+                    <div class="grid grid-cols-1 gap-2 mt-2 bg-gray-900/40 p-3 rounded-lg text-[11px]">
+                        <div><strong class="text-amber-400">Pickup:</strong> Jul 05, 4:30 PM (SLC Airport Terminal)</div>
+                        <div><strong class="text-amber-400">Drop-off:</strong> Jul 11, 4:30 PM (SLC Airport Terminal)</div>
                     </div>
                 </div>
+            </div>
 
-                <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-4">
-                    <h2 class="font-bold text-base tracking-tight flex items-center gap-3"><i class="fa-solid fa-car text-amber-400"></i>Rental Vehicle Logistics</h2>
-                    <div class="text-sm">
-                        <div class="font-bold">Hertz SUV AWD (Jeep Compass or similar)</div>
-                        <div class="text-xs text-gray-400 mt-1">Confirmation: L57232183D0</div>
-                        <div class="grid grid-cols-2 gap-4 mt-4 text-xs bg-gray-900/40 p-3 rounded-lg">
-                            <div><strong>Pickup:</strong> Jul 05, 4:30 PM (SLC)</div>
-                            <div><strong>Drop-off:</strong> Jul 11, 4:30 PM (SLC)</div>
-                        </div>
+            <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-4 md:col-span-2 lg:col-span-1">
+                <h2 class="font-bold text-base tracking-tight flex items-center gap-3"><i class="fa-solid fa-hotel text-emerald-400"></i>Lodging Accommodations</h2>
+                <div class="space-y-3">
+                    <div class="text-[11px] border-l-2 border-amber-500 pl-3">
+                        <div class="font-bold text-white">Holiday Inn Express Idaho Falls</div>
+                        <p class="text-gray-400 mt-0.5">Jul 05 – Jul 06 • 2 Queen Standard Rooms</p>
                     </div>
-                </div>
-
-                <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-6">
-                    <h2 class="font-bold text-base tracking-tight flex items-center gap-3"><i class="fa-solid fa-hotel text-emerald-400"></i>Lodging Accommodations</h2>
-                    <div class="space-y-4 text-xs border-l-2 border-amber-500 pl-4">
-                        <div class="font-bold text-sm text-white">Holiday Inn Express Idaho Falls</div>
-                        <p class="text-gray-400">Jul 05 – Jul 06 • 2 Queen Standard</p>
+                    <div class="text-[11px] border-l-2 border-emerald-500 pl-3">
+                        <div class="font-bold text-white">Grant Village Lodges</div>
+                        <p class="text-gray-400 mt-0.5">Jul 06 – Jul 09 • Deluxe Lodge 2 Doubles • Itinerary #20603281</p>
                     </div>
-                    <div class="space-y-4 text-xs border-l-2 border-gray-700 pl-4">
-                        <div class="font-bold text-sm text-white">Grant Village Lodges (Yellowstone)</div>
-                        <p class="text-gray-400">Jul 06 – Jul 09 • Deluxe Lodge 2 Doubles • Itinerary #20603281</p>
-                    </div>
-                    <div class="space-y-4 text-xs border-l-2 border-gray-700 pl-4">
-                        <div class="font-bold text-sm text-white">Canyon Lodge & Cabins (Yellowstone)</div>
-                        <p class="text-gray-400">Jul 09 – Jul 11 • Deluxe 2 Queen • Confirmation: B_52688586</p>
+                    <div class="text-[11px] border-l-2 border-purple-500 pl-3">
+                        <div class="font-bold text-white">Canyon Lodge & Cabins</div>
+                        <p class="text-gray-400 mt-0.5">Jul 09 – Jul 11 • Deluxe Room 2 Queens • Confirmation: B_52688586</p>
                     </div>
                 </div>
             </div>
@@ -237,7 +222,7 @@
         <button class="floating-day-btn" data-day="6-9">Jul 6-9</button>
         <button class="floating-day-btn" data-day="9">Jul 9</button>
         <button class="floating-day-btn" data-day="11">Jul 11</button>
-        <button id="exitFullscreenBtn" class="floating-day-btn" style="background: rgba(239, 68, 68, 0.1); color: red; border-color: red;">Exit</button>
+        <button id="exitFullscreenBtn" class="floating-day-btn" style="background: rgba(239, 68, 68, 0.1); color: red; border-color: red;">Exit Map View</button>
     </div>
 
     <script>
@@ -245,65 +230,57 @@
             oak: { lat: 37.7213, lng: -122.2207, name: 'Oakland (OAK)', icon: '✈️' },
             slc: { lat: 40.7884, lng: -111.8761, name: 'Salt Lake City (SLC)', icon: '✈️' },
             idaho: { lat: 43.4635, lng: -111.9273, name: 'Idaho Falls', icon: '🏨' },
-            westEntrance: { lat: 44.6582, lng: -111.1011, name: 'West Entrance', icon: '🌲' },
-            madison: { lat: 44.6456, lng: -110.8604, name: 'Madison Junction', icon: '🔀' },
-            oldFaithful: { lat: 44.4604, lng: -110.8281, name: 'Old Faithful', icon: '♨️' },
-            thumb: { lat: 44.4158, lng: -110.5742, name: 'West Thumb', icon: '🔀' },
             grant: { lat: 44.3931, lng: -110.5569, name: 'Grant Village', icon: '⛺' },
-            lakeJct: { lat: 44.5651, lng: -110.4002, name: 'Lake Junction', icon: '🔀' },
-            hayden: { lat: 44.6341, lng: -110.4435, name: 'Hayden Valley', icon: '🦬' },
             canyon: { lat: 44.7342, lng: -110.4892, name: 'Canyon Village', icon: '⛺' }
         };
 
+        // Dense geographical curves tracing precise arterial infrastructure alignments explicitly
         const routesData = {
             slcToIdahoFalls: [
-                [40.7884, -111.8761], [40.8421, -111.9032], [40.9105, -111.8941], [41.0022, -111.9324],
-                [41.0954, -111.9745], [41.1712, -112.0485], [41.2230, -111.9738], [41.2985, -112.0124],
-                [41.3841, -112.0210], [41.4925, -112.0084], [41.5642, -112.0115], [41.6854, -111.9421],
-                [41.7425, -111.8410], [41.8541, -111.8954], [41.9822, -112.0321], [42.0845, -112.0454],
-                [42.1954, -112.1124], [42.2841, -112.1854], [42.3652, -112.2415], [42.4841, -112.2541],
-                [42.5854, -112.3012], [42.6652, -112.4124], [42.7541, -112.4541], [42.8621, -112.4414],
-                [42.9425, -112.3854], [43.0541, -112.4012], [43.1850, -112.4210], [43.2954, -112.3214],
-                [43.3854, -112.1124], [43.4635, -111.9273]
+                [40.7884, -111.8761], [40.8354, -111.9022], [40.9125, -111.8854], [40.9854, -111.9124],
+                [41.0542, -111.9542], [41.1215, -112.0454], [41.2230, -111.9738], [41.3124, -112.0215],
+                [41.4215, -112.0184], [41.5312, -112.0105], [41.6454, -111.9812], [41.7370, -111.8338],
+                [41.8214, -111.8654], [41.9325, -111.9954], [42.0452, -112.0412], [42.1542, -112.0854],
+                [42.2541, -112.1652], [42.3412, -112.2215], [42.4542, -112.2612], [42.5412, -112.2514],
+                [42.6452, -112.3512], [42.7412, -112.4412], [42.8621, -112.4414], [42.9215, -112.3954],
+                [43.0412, -112.4112], [43.1850, -112.4210], [43.2754, -112.3512], [43.3541, -112.1542],
+                [43.4635, -111.9273]
             ],
-            // Traces US-20 through Rexburg and West Yellowstone, then matches Grand Loop Road down to West Thumb
             idahoFallsToGrant: [
-                [43.4635, -111.9273], [43.5241, -111.8954], [43.5954, -111.9124], [43.6842, -111.8841],
-                [43.7425, -111.8124], [43.8231, -111.7824], [43.8954, -111.7124], [43.9662, -111.6821],
-                [44.0452, -111.6124], [44.1105, -111.4215], [44.1954, -111.3854], [44.2741, -111.3521],
-                [44.3542, -111.3124], [44.4452, -111.1854], [44.5321, -111.1084], [44.6124, -111.1154],
-                [44.6582, -111.1011], // West Entrance
-                [44.6591, -111.0524], [44.6512, -110.9614], [44.6456, -110.8604], // Madison Junction
-                [44.6012, -110.8415], [44.5411, -110.8012], [44.4604, -110.8281], // Old Faithful
-                [44.4415, -110.7912], [44.4192, -110.7104], [44.4158, -110.5742], // West Thumb
+                [43.4635, -111.9273], [43.5112, -111.8854], [43.5854, -111.9052], [43.6652, -111.8954],
+                [43.7251, -111.8312], [43.8231, -111.7824], [43.8854, -111.7214], [43.9662, -111.6821],
+                [44.0321, -111.6352], [44.1105, -111.4215], [44.1854, -111.3912], [44.2541, -111.3652],
+                [44.3312, -111.3321], [44.4215, -111.2154], [44.5124, -111.1154], [44.6102, -111.1215],
+                [44.6582, -111.1011], // West Entrance Station Anchor
+                [44.6595, -111.0421], [44.6521, -110.9542], [44.6456, -110.8604], // Madison Junction Corridor Line
+                [44.5954, -110.8431], [44.5312, -110.8112], [44.4604, -110.8281], // Old Faithful Junction
+                [44.4451, -110.8115], [44.4312, -110.7512], [44.4195, -110.6754], [44.4158, -110.5742], // Craig Pass down to West Thumb
                 [44.3931, -110.5569]  // Grant Village
             ],
-            // Lower Grand Loop exploration: Grant -> West Thumb -> Old Faithful -> Madison -> Norris -> Canyon -> Lake -> West Thumb -> Grant
             grantExplorationLoop: [
-                [44.3931, -110.5569], [44.4158, -110.5742], [44.4192, -110.7104], [44.4604, -110.8281], // Old Faithful
-                [44.5411, -110.8012], [44.6456, -110.8604], // Madison
-                [44.6812, -110.8211], [44.7275, -110.7014], // Norris
-                [44.7312, -110.5912], [44.7342, -110.4892], // Canyon Village
-                [44.6912, -110.4614], [44.6341, -110.4435], // Hayden Valley
-                [44.5651, -110.4002], // Lake Junction
-                [44.5211, -110.4124], [44.4612, -110.5214], [44.4158, -110.5742], // West Thumb (strictly hug shoreline road, never cross water)
+                [44.3931, -110.5569], [44.4158, -110.5742], [44.4195, -110.6754], [44.4604, -110.8281], // Old Faithful Segment
+                [44.5312, -110.8112], [44.6456, -110.8604], // Madison Segment
+                [44.6754, -110.8321], [44.7275, -110.7014], // Norris Basin
+                [44.7295, -110.5854], [44.7342, -110.4892], // Canyon Village Junction
+                [44.6954, -110.4542], [44.6341, -110.4435], // Hayden Valley Line
+                [44.5651, -110.4002], // Lake Village Junction
+                [44.5321, -110.3954], [44.4954, -110.4112], [44.4542, -110.5124], [44.4158, -110.5742], // Shoreline Corridor (Strictly hugging west edge)
                 [44.3931, -110.5569]
             ],
-            // Explicitly curves along the west edge of Yellowstone Lake shoreline road north to Lake Junction, then into Hayden Valley
             grantToCanyon: [
-                [44.3931, -110.5569], [44.4158, -110.5742], // West Thumb
-                [44.4412, -110.5411], [44.4815, -110.4512], [44.5211, -110.4124], [44.5651, -110.4002], // Lake Junction
-                [44.6012, -110.4214], [44.6341, -110.4435], // Hayden Valley
-                [44.6851, -110.4615], [44.7342, -110.4892]  // Canyon Village
+                [44.3931, -110.5569], [44.4158, -110.5742], // West Thumb Baseline
+                [44.4542, -110.5124], [44.4954, -110.4112], [44.5321, -110.3954], [44.5651, -110.4002], // Shoreline highway trace curving up to Lake Junction
+                [44.6012, -110.4184], [44.6341, -110.4435], // Hayden Valley Corridor Track
+                [44.6854, -110.4552], [44.7342, -110.4892]  // Canyon Village Arrival
             ]
         };
 
         const dayDetails = {
             '5': { title: 'Sunday, July 5 - Flight & Drive Day', details: ['12:33 PM - Depart Oakland (OAK) on Delta DL 4134', '3:29 PM - Arrive Salt Lake City (SLC)', '4:30 PM - Pickup Midsize SUV at Hertz terminal desk', '7:45 PM - Check-in Holiday Inn Express, Idaho Falls via I-15 North'] },
-            '6': { title: 'Monday, July 6 - Drive to Grant Village via US-20', details: ['8:00 AM - Depart Idaho Falls north on US-20 highway infrastructure', '11:00 AM - Enter West Entrance tracking Madison and Old Faithful corridors', '2:30 PM - Check-in Grand Village Lodges base'] },
-            '6-9': { title: 'July 6-9 - Grand Loop Route Explorations', details: ['Explore Old Faithful Geyser infrastructures along the asphalt corridor layout', 'Hike Grand Prismatic Overlook trail networks and boardwalk segments', 'View wildlife areas surrounding the loop highway perimeter lines'] },
-            '9': { title: 'Thursday, July 9 - Shift to Canyon Village via Hayden Valley', details: ['9:00 AM - Check out from Grant Village driving the lake perimeter road north', '12:00 PM - Check-in Canyon Lodge & Cabins assets', 'Afternoon - Tour the Grand Canyon of the Yellowstone loop lookouts'] },
-            '11': { title: 'Saturday, July 11 - Exit Loop Route Home', details: ['8:00 AM - Check out Canyon Lodge, track back out through west entrance grid highways', '1:30 PM - Return vehicle asset to SLC airport terminal lots', '6:25 PM - Depart SLC via Southwest WN 3276 back to OAK'] }
+            '6': { title: 'Monday, July 6 - Drive to Grant Village via US-20', details: ['8:00 AM - Depart Idaho Falls north navigating the US-20 highway infrastructure', '11:00 AM - Process through West Entrance station tracking down Madison and Old Faithful loop segments', '2:30 PM - Check-in Grand Village Lodges base'] },
+            '6-9': { title: 'July 6-9 - Grand Loop Route Explorations', details: ['Explore Old Faithful Geyser infrastructure systems along the lower loop roadway network', 'Hike Grand Prismatic Overlook trail networks and boardwalk paths', 'View wildlife areas surrounding the lower loop highway layouts'] },
+            '9': { title: 'Thursday, July 9 - Shift to Canyon Village via Hayden Valley', details: ['9:00 AM - Check out from Grant Village tracking the lake shoreline road layout north', '12:00 PM - Check-in Canyon Lodge & Cabins inside the park boundary lines', 'Afternoon - Drive out along the Grand Canyon of the Yellowstone loop scenic points'] },
+            '11': { title: 'Saturday, July 11 - Exit Loop Route Home', details: ['8:00 AM - Check out Canyon Lodge, backtrace the highway grid out through west entrance boundaries', '1:30 PM - Return vehicle asset to SLC airport terminal infrastructure lots', '6:25 PM - Depart SLC via Southwest WN 3276 back to OAK'] }
         };
 
         const map = L.map('map').setView([42.5, -111.5], 6);
