@@ -90,45 +90,88 @@
             </div>
         </section>
 
-        <!-- Animated Map Section -->
+        <!-- Day-wise Movement & Plan Section with Map -->
         <section class="relative rounded-3xl overflow-hidden bg-gray-800 border border-gray-700 shadow-2xl p-6 md:p-8">
-            <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-map text-lg"></i></div>
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-calendar-days text-lg"></i></div>
                     <div>
-                        <h2 class="font-bold text-lg tracking-tight text-gray-100">Journey Route Animation</h2>
-                        <p class="text-xs text-gray-400 mt-0.5">Watch your entire trip unfold across the map</p>
+                        <h2 class="font-bold text-lg tracking-tight text-gray-100">Day-by-Day Journey</h2>
+                        <p class="text-xs text-gray-400 mt-0.5">Click a day to see your movement and activities on the map</p>
                     </div>
                 </div>
                 <button id="resetMapBtn" class="px-4 py-2 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-lg border border-amber-500/30 hover:bg-amber-500/20 transition-colors flex items-center gap-2">
                     <i class="fa-solid fa-arrow-rotate-right"></i>
-                    <span>Replay</span>
+                    <span>Replay All</span>
                 </button>
             </div>
-            <div id="map" class="w-full h-96 md:h-[500px] bg-gray-900/50 border border-gray-700 rounded-xl"></div>
-            
-            <!-- Route Legend -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
-                <div class="flex items-center gap-2 text-xs">
-                    <div class="w-3 h-3 rounded-full bg-sky-400 shadow-lg shadow-sky-400/50"></div>
-                    <span class="text-gray-300">Flight: OAK → SLC</span>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Day Selector -->
+                <div class="space-y-3">
+                    <div class="text-xs font-bold text-amber-500 tracking-wider uppercase mb-4">Select Day</div>
+                    <div id="dayButtons" class="space-y-2">
+                        <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-amber-500/50 bg-amber-500/10 text-amber-400 font-semibold text-sm transition-all hover:bg-amber-500/20" data-day="5">
+                            <span class="font-bold">Day 1: Jul 05</span>
+                            <div class="text-xs text-amber-300/70 mt-0.5">Flight OAK → SLC</div>
+                        </button>
+                        <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="6">
+                            <span class="font-bold">Day 2: Jul 06</span>
+                            <div class="text-xs text-gray-400 mt-0.5">Drive to Yellowstone</div>
+                        </button>
+                        <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="6-9">
+                            <span class="font-bold">Days 3-5: Jul 06-09</span>
+                            <div class="text-xs text-gray-400 mt-0.5">Grant Village Exploration</div>
+                        </button>
+                        <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="9-11">
+                            <span class="font-bold">Days 6-7: Jul 09-11</span>
+                            <div class="text-xs text-gray-400 mt-0.5">Canyon Village & Return</div>
+                        </button>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2 text-xs">
-                    <div class="w-3 h-3 rounded-full bg-amber-400 shadow-lg shadow-amber-400/50"></div>
-                    <span class="text-gray-300">Drive: SLC → Idaho Falls</span>
+
+                <!-- Map -->
+                <div class="lg:col-span-2">
+                    <div id="map" class="w-full h-96 md:h-[450px] bg-gray-900/50 border border-gray-700 rounded-xl shadow-lg"></div>
+                    
+                    <!-- Route Legend -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
+                        <div class="flex items-center gap-2 text-xs">
+                            <div class="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-lg shadow-sky-400/50"></div>
+                            <span class="text-gray-300">Flight</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <div class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-lg shadow-amber-400/50"></div>
+                            <span class="text-gray-300">Drive to Park</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50"></div>
+                            <span class="text-gray-300">In-Park Drive</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <div class="w-2.5 h-2.5 rounded-full bg-purple-400 shadow-lg shadow-purple-400/50"></div>
+                            <span class="text-gray-300">Transfer</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2 text-xs">
-                    <div class="w-3 h-3 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50"></div>
-                    <span class="text-gray-300">Drive: → Yellowstone</span>
-                </div>
-                <div class="flex items-center gap-2 text-xs">
-                    <div class="w-3 h-3 rounded-full bg-purple-400 shadow-lg shadow-purple-400/50"></div>
-                    <span class="text-gray-300">In-Park Movement</span>
+            </div>
+
+            <!-- Day Details Card -->
+            <div class="mt-6 p-6 bg-gray-900/50 rounded-xl border border-gray-700">
+                <div id="dayDetails" class="space-y-3">
+                    <h3 class="font-bold text-base text-amber-400">Sunday, July 5 - Flight Day</h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex gap-2"><span class="text-amber-400">•</span> 12:33 PM - Depart Oakland (OAK) on Delta DL 4134</li>
+                        <li class="flex gap-2"><span class="text-amber-400">•</span> 3:29 PM - Arrive Salt Lake City (SLC), 1h 56m flight</li>
+                        <li class="flex gap-2"><span class="text-amber-400">•</span> 4:30 PM - Pickup Midsize SUV (Hertz) at SLC Terminal</li>
+                        <li class="flex gap-2"><span class="text-amber-400">•</span> 7:45 PM - Check-in Holiday Inn Express, Idaho Falls</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-                    
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            
             <div class="lg:col-span-1 space-y-4">
                 <div class="bg-gray-800 rounded-2xl border border-gray-700 p-5 shadow-xl sticky top-24">
                     <h3 class="text-sm font-bold tracking-wider text-gray-400 uppercase mb-4 flex items-center justify-between">
@@ -357,11 +400,54 @@
     <script>
         // Coordinates for key locations
         const locations = {
-            oak: { lat: 37.7213, lng: -122.2207, name: 'Oakland (OAK)', color: '#0EA5E9', icon: '✈️' },
-            slc: { lat: 40.7884, lng: -111.8761, name: 'Salt Lake City (SLC)', color: '#0EA5E9', icon: '✈️' },
-            idaho: { lat: 43.4635, lng: -111.9273, name: 'Idaho Falls', color: '#F59E0B', icon: '🏨' },
-            grant: { lat: 44.4268, lng: -110.8429, name: 'Grant Village', color: '#10B981', icon: '⛺' },
-            canyon: { lat: 44.7928, lng: -110.5006, name: 'Canyon Village', color: '#A855F7', icon: '⛺' }
+            oak: { lat: 37.7213, lng: -122.2207, name: 'Oakland (OAK)', icon: '✈️' },
+            slc: { lat: 40.7884, lng: -111.8761, name: 'Salt Lake City (SLC)', icon: '✈️' },
+            idaho: { lat: 43.4635, lng: -111.9273, name: 'Idaho Falls', icon: '🏨' },
+            grant: { lat: 44.4268, lng: -110.8429, name: 'Grant Village', icon: '⛺' },
+            canyon: { lat: 44.7928, lng: -110.5006, name: 'Canyon Village', icon: '⛺' }
+        };
+
+        // Day-wise details
+        const dayDetails = {
+            '5': {
+                title: 'Sunday, July 5 - Flight Day',
+                details: [
+                    '12:33 PM - Depart Oakland (OAK) on Delta DL 4134',
+                    '3:29 PM - Arrive Salt Lake City (SLC), 1h 56m flight',
+                    '4:30 PM - Pickup Midsize SUV (Hertz) at SLC Terminal',
+                    '7:45 PM - Check-in Holiday Inn Express, Idaho Falls'
+                ]
+            },
+            '6': {
+                title: 'Monday, July 6 - Drive to Yellowstone',
+                details: [
+                    '8:00 AM - Check-out from Idaho Falls hotel',
+                    '11:00 AM - Arrive at Yellowstone South Entrance',
+                    '12:00 PM - Drive through Grant Village area',
+                    '2:30 PM - Check-in Grant Village Lodges',
+                    'Evening - Explore nearby geysers and hot springs'
+                ]
+            },
+            '6-9': {
+                title: 'July 6-9 - Grant Village Base Operations',
+                details: [
+                    'Days at Grant Village - South Loop Yellowstone base',
+                    'Explore Old Faithful, Norris Geyser Basin',
+                    'Visit Midway Geyser Basin and Grand Prismatic Spring',
+                    'Hike various trails and scenic viewpoints',
+                    'Wildlife viewing and photography opportunities'
+                ]
+            },
+            '9-11': {
+                title: 'July 9-11 - Canyon Village & Return',
+                details: [
+                    'Transfer from Grant Village to Canyon Village',
+                    'Canyon Village - North/Central Yellowstone base',
+                    'Visit Grand Canyon of the Yellowstone',
+                    'Explore Artist Point and scenic drives',
+                    'July 11 - Exit park, drive to SLC, Flight home'
+                ]
+            }
         };
 
         // Initialize map centered on the trip area
@@ -420,48 +506,102 @@
             return route;
         }
 
-        // Function to animate the entire journey
-        function animateJourney() {
-            // Clear existing routes (keep markers)
+        // Clear map
+        function clearMapLayers() {
             map.eachLayer(layer => {
-                if (layer instanceof L.Polyline) {
-                    map.removeLayer(layer);
+                if (layer instanceof L.Polyline || layer instanceof L.Marker) {
+                    if (!(layer instanceof L.TileLayer)) {
+                        map.removeLayer(layer);
+                    }
                 }
             });
+        }
 
-            // Reset animations
-            document.querySelectorAll('.custom-marker').forEach(m => m.classList.remove('pulse-marker'));
+        // Show day-specific movements
+        function showDay(day) {
+            clearMapLayers();
 
-            // Stagger the animations
-            setTimeout(() => {
+            if (day === '5') {
+                // Flight from OAK to SLC
                 createMarker(locations.oak);
                 createMarker(locations.slc);
                 drawAnimatedRoute(locations.oak, locations.slc, '#0EA5E9', 2);
-            }, 0);
-
-            setTimeout(() => {
+            } else if (day === '6') {
+                // Drive from SLC to Idaho Falls to Yellowstone
+                createMarker(locations.slc);
                 createMarker(locations.idaho);
-                drawAnimatedRoute(locations.slc, locations.idaho, '#F59E0B', 2);
-            }, 2500);
-
-            setTimeout(() => {
                 createMarker(locations.grant, true);
-                drawAnimatedRoute(locations.idaho, locations.grant, '#10B981', 2);
-            }, 5000);
-
-            setTimeout(() => {
+                drawAnimatedRoute(locations.slc, locations.idaho, '#F59E0B', 2);
+                setTimeout(() => {
+                    drawAnimatedRoute(locations.idaho, locations.grant, '#10B981', 2);
+                }, 1000);
+            } else if (day === '6-9') {
+                // Base at Grant Village
+                createMarker(locations.grant, true);
+                // Show local movements
+                const nearbyPoints = [
+                    { lat: 44.3, lng: -110.8, name: 'Nearby Attraction' },
+                    { lat: 44.5, lng: -110.9, name: 'Geyser Basin' }
+                ];
+                nearbyPoints.forEach((pt, idx) => {
+                    setTimeout(() => {
+                        drawAnimatedRoute(locations.grant, pt, '#10B981', 1.5);
+                    }, idx * 800);
+                });
+            } else if (day === '9-11') {
+                // Transfer to Canyon and return
+                createMarker(locations.grant);
                 createMarker(locations.canyon, true);
-                drawAnimatedRoute(locations.grant, locations.canyon, '#A855F7', 1.5);
-            }, 7500);
+                createMarker(locations.slc);
+                drawAnimatedRoute(locations.grant, locations.canyon, '#A855F7', 2);
+                setTimeout(() => {
+                    drawAnimatedRoute(locations.canyon, locations.slc, '#0EA5E9', 2);
+                }, 2500);
+            }
+
+            // Update day details
+            updateDayDetails(day);
         }
 
-        // Initialize map on load
-        window.addEventListener('load', () => {
-            animateJourney();
+        // Update the details card
+        function updateDayDetails(day) {
+            const details = dayDetails[day];
+            const detailsDiv = document.getElementById('dayDetails');
+            detailsDiv.innerHTML = `
+                <h3 class="font-bold text-base text-amber-400">${details.title}</h3>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    ${details.details.map(detail => `<li class="flex gap-2"><span class="text-amber-400">•</span> ${detail}</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        // Event listeners for day buttons
+        document.querySelectorAll('.dayBtn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active button styling
+                document.querySelectorAll('.dayBtn').forEach(b => {
+                    b.classList.remove('border-amber-500/50', 'bg-amber-500/10', 'text-amber-400');
+                    b.classList.add('border-gray-600', 'bg-gray-900/30', 'text-gray-300');
+                });
+                this.classList.remove('border-gray-600', 'bg-gray-900/30', 'text-gray-300');
+                this.classList.add('border-amber-500/50', 'bg-amber-500/10', 'text-amber-400');
+                
+                // Show the selected day
+                showDay(this.dataset.day);
+            });
         });
 
         // Replay button
-        document.getElementById('resetMapBtn').addEventListener('click', animateJourney);
+        document.getElementById('resetMapBtn').addEventListener('click', () => {
+            document.querySelector('[data-day="5"]').click();
+        });
+
+        // Initialize with Day 1
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('[data-day="5"]').click();
+            }, 300);
+        });
 
         // Adjust map on window resize
         window.addEventListener('resize', () => {
