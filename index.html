@@ -210,23 +210,44 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-4 md:col-span-2 lg:col-span-3">
-                <h2 class="font-bold text-base tracking-tight flex items-center gap-3">
-                    <i class="fa-solid fa-basket-shopping text-amber-500"></i>Trip Shopping & Supply List
-                </h2>
-                <p class="text-xs text-gray-400">Manage trip items live. Changes are preserved automatically inside this browser session.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-bold text-base tracking-tight flex items-center gap-3">
+                        <i class="fa-solid fa-house-chimney text-sky-400"></i>Pack Items From Home
+                    </h2>
+                    <span id="homeCount" class="text-xs bg-gray-900 border border-gray-700 text-gray-400 px-2 py-0.5 rounded-md font-mono">0 checked</span>
+                </div>
                 
-                <form id="shoppingForm" class="flex gap-2">
-                    <input type="text" id="itemInput" required placeholder="Add item (e.g., Bear Spray, Trail Mix...)" class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors">
+                <form id="homeForm" class="flex gap-2">
+                    <input type="text" id="homeInput" required placeholder="Add gear to pack from home..." class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-sky-400 transition-colors">
+                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors flex items-center gap-1">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </form>
+                <ul id="homeList" class="space-y-2 max-h-64 overflow-y-auto pr-1"></ul>
+            </div>
+
+            <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-bold text-base tracking-tight flex items-center gap-3">
+                        <i class="fa-solid fa-cart-shopping text-amber-500"></i>Buy at Walmart (Idaho Falls)
+                    </h2>
+                    <span id="walmartCount" class="text-xs bg-gray-900 border border-gray-700 text-gray-400 px-2 py-0.5 rounded-md font-mono">0 checked</span>
+                </div>
+                
+                <form id="walmartForm" class="flex gap-2">
+                    <input type="text" id="walmartInput" required placeholder="Add provisions to buy at staging stop..." class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors">
                     <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2 rounded-xl text-sm transition-colors flex items-center gap-1">
                         <i class="fa-solid fa-plus"></i> Add
                     </button>
                 </form>
-
-                <ul id="shoppingList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
-                    </ul>
+                <ul id="walmartList" class="space-y-2 max-h-64 overflow-y-auto pr-1"></ul>
             </div>
+
         </div>
     </main>
 
@@ -343,59 +364,80 @@
             L.marker([loc.lat, loc.lng], { icon: L.divIcon({ html: el.outerHTML, iconSize: [30, 30], className: 'c-mark' }) }).bindPopup(loc.name).addTo(map);
         }
 
-        // --- SHOPPING LIST CONTROLLER (LOCALSTORAGE API) ---
-        let items = JSON.parse(localStorage.getItem('yellowstone_items')) || [
-            { text: 'Bear Spray', checked: false },
-            { text: 'Binoculars', checked: false },
-            { text: 'High SPF Sunscreen', checked: true }
+        // --- SPLIT STORAGE SYSTEM CONTROLLERS ---
+        let homeItems = JSON.parse(localStorage.getItem('y_home_items')) || [
+            { text: 'Binoculars & Cameras', checked: false },
+            { text: 'Warm Layered Jackets', checked: false },
+            { text: 'Hiking Boots', checked: false }
         ];
 
-        const shoppingForm = document.getElementById('shoppingForm');
-        const itemInput = document.getElementById('itemInput');
-        const shoppingList = document.getElementById('shoppingList');
+        let walmartItems = JSON.parse(localStorage.getItem('y_walmart_items')) || [
+            { text: 'Bear Spray', checked: false },
+            { text: 'Gallons of Water', checked: false },
+            { text: 'Trail Snacks & Mixes', checked: false }
+        ];
 
-        function saveAndRenderItems() {
-            localStorage.setItem('yellowstone_items', JSON.stringify(items));
-            shoppingList.innerHTML = '';
+        function renderList(storageKey, itemsArray, elementId, countId, checkColor) {
+            localStorage.setItem(storageKey, JSON.stringify(itemsArray));
+            const listEl = document.getElementById(elementId);
+            const countEl = document.getElementById(countId);
+            listEl.innerHTML = '';
             
-            items.forEach((item, index) => {
+            let completed = 0;
+            itemsArray.forEach((item, idx) => {
+                if (item.checked) completed++;
                 const li = document.createElement('li');
-                li.className = `flex items-center justify-between p-3 rounded-xl border transition-all ${item.checked ? 'bg-gray-900/20 border-gray-800 text-gray-500 line-through' : 'bg-gray-900/60 border-gray-700 text-gray-200'}`;
-                
+                li.className = `flex items-center justify-between p-2.5 rounded-xl border transition-all ${item.checked ? 'bg-gray-900/20 border-gray-800 text-gray-500 line-through' : 'bg-gray-900/60 border-gray-700 text-gray-200'}`;
                 li.innerHTML = `
-                    <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="toggleItem(${index})">
-                        <i class="fa-regular ${item.checked ? 'fa-circle-check text-emerald-500' : 'fa-circle text-gray-600'} text-lg"></i>
-                        <span class="text-sm font-medium tracking-wide break-all">${item.text}</span>
+                    <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="toggleItem('${storageKey}', ${idx})">
+                        <i class="fa-regular ${item.checked ? 'fa-circle-check ' + checkColor : 'fa-circle text-gray-600'} text-base"></i>
+                        <span class="text-xs font-medium tracking-wide break-all">${item.text}</span>
                     </div>
-                    <button onclick="removeItem(${index})" class="text-gray-500 hover:text-red-400 p-1 transition-colors">
-                        <i class="fa-solid fa-trash-can text-sm"></i>
+                    <button onclick="removeItem('${storageKey}', ${idx})" class="text-gray-600 hover:text-red-400 px-2 py-1 transition-colors">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
                     </button>
                 `;
-                shoppingList.appendChild(li);
+                listEl.appendChild(li);
             });
+            countEl.innerText = `${completed} / ${itemsArray.length} checked`;
         }
 
-        shoppingForm.addEventListener('submit', (e) => {
+        function updateAllLists() {
+            renderList('y_home_items', homeItems, 'homeList', 'homeCount', 'text-sky-400');
+            renderList('y_walmart_items', walmartItems, 'walmartList', 'walmartCount', 'text-amber-500');
+        }
+
+        document.getElementById('homeForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const text = itemInput.value.trim();
-            if (text) {
-                items.push({ text, checked: false });
-                itemInput.value = '';
-                saveAndRenderItems();
+            const input = document.getElementById('homeInput');
+            if (input.value.trim()) {
+                homeItems.push({ text: input.value.trim(), checked: false });
+                input.value = ''; updateAllLists();
             }
         });
 
-        window.toggleItem = function(index) {
-            items[index].checked = !items[index].checked;
-            saveAndRenderItems();
+        document.getElementById('walmartForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('walmartInput');
+            if (input.value.trim()) {
+                walmartItems.push({ text: input.value.trim(), checked: false });
+                input.value = ''; updateAllLists();
+            }
+        });
+
+        window.toggleItem = function(key, idx) {
+            if (key === 'y_home_items') homeItems[idx].checked = !homeItems[idx].checked;
+            else walmartItems[idx].checked = !walmartItems[idx].checked;
+            updateAllLists();
         };
 
-        window.removeItem = function(index) {
-            items.splice(index, 1);
-            saveAndRenderItems();
+        window.removeItem = function(key, idx) {
+            if (key === 'y_home_items') homeItems.splice(idx, 1);
+            else walmartItems.splice(idx, 1);
+            updateAllLists();
         };
 
-        // --- LAYOUT & ACTIONS BINDINGS ---
+        // --- BUTTON BINDINGS & INIT ---
         document.querySelectorAll('.dayBtn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.dayBtn').forEach(b => b.className = "dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all");
@@ -427,9 +469,8 @@
             });
         });
 
-        // Init Setup
         window.addEventListener('load', () => {
-            saveAndRenderItems();
+            updateAllLists();
             setTimeout(() => document.querySelector('[data-day="5"]').click(), 200);
         });
     </script>
