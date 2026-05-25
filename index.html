@@ -6,6 +6,56 @@
     <title>Yellowstone Trip Itinerary</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <style>
+        @keyframes drawLine {
+            from {
+                stroke-dashoffset: 1000;
+            }
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        @keyframes pulse-marker {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
+        .animated-route {
+            stroke-dasharray: 1000;
+            animation: drawLine 3s ease-in-out forwards;
+        }
+        .pulse-marker {
+            animation: pulse-marker 2s ease-in-out infinite;
+        }
+        #map {
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        .leaflet-control-attribution {
+            background-color: rgba(17, 24, 39, 0.8) !important;
+            border-color: rgba(55, 65, 81, 1) !important;
+            color: rgba(156, 163, 175, 1) !important;
+        }
+        .leaflet-control-zoom {
+            border-radius: 0.75rem !important;
+            background-color: rgba(31, 41, 55, 0.9) !important;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+        }
+        .leaflet-control-zoom-in, .leaflet-control-zoom-out {
+            border: 1px solid rgba(55, 65, 81, 1) !important;
+            color: rgba(217, 119, 6, 1) !important;
+            background-color: rgba(31, 41, 55, 0.95) !important;
+            font-weight: bold !important;
+        }
+        .leaflet-control-zoom-in:hover, .leaflet-control-zoom-out:hover {
+            background-color: rgba(55, 65, 81, 0.95) !important;
+        }
+    </style>
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen font-sans antialiased selection:bg-amber-500 selection:text-gray-900">
 
@@ -40,8 +90,45 @@
             </div>
         </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <!-- Animated Map Section -->
+        <section class="relative rounded-3xl overflow-hidden bg-gray-800 border border-gray-700 shadow-2xl p-6 md:p-8">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-map text-lg"></i></div>
+                    <div>
+                        <h2 class="font-bold text-lg tracking-tight text-gray-100">Journey Route Animation</h2>
+                        <p class="text-xs text-gray-400 mt-0.5">Watch your entire trip unfold across the map</p>
+                    </div>
+                </div>
+                <button id="resetMapBtn" class="px-4 py-2 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-lg border border-amber-500/30 hover:bg-amber-500/20 transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-rotate-right"></i>
+                    <span>Replay</span>
+                </button>
+            </div>
+            <div id="map" class="w-full h-96 md:h-[500px] bg-gray-900/50 border border-gray-700 rounded-xl"></div>
             
+            <!-- Route Legend -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+                <div class="flex items-center gap-2 text-xs">
+                    <div class="w-3 h-3 rounded-full bg-sky-400 shadow-lg shadow-sky-400/50"></div>
+                    <span class="text-gray-300">Flight: OAK → SLC</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <div class="w-3 h-3 rounded-full bg-amber-400 shadow-lg shadow-amber-400/50"></div>
+                    <span class="text-gray-300">Drive: SLC → Idaho Falls</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <div class="w-3 h-3 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50"></div>
+                    <span class="text-gray-300">Drive: → Yellowstone</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <div class="w-3 h-3 rounded-full bg-purple-400 shadow-lg shadow-purple-400/50"></div>
+                    <span class="text-gray-300">In-Park Movement</span>
+                </div>
+            </div>
+        </section>
+
+                    
             <div class="lg:col-span-1 space-y-4">
                 <div class="bg-gray-800 rounded-2xl border border-gray-700 p-5 shadow-xl sticky top-24">
                     <h3 class="text-sm font-bold tracking-wider text-gray-400 uppercase mb-4 flex items-center justify-between">
@@ -266,6 +353,121 @@
     <footer class="max-w-6xl mx-auto px-4 py-8 border-t border-gray-800 text-center text-xs text-gray-500">
         All synchronization updates compiled on May 25, 2026. Data extracted from verified active reservation confirmations.
     </footer>
+
+    <script>
+        // Coordinates for key locations
+        const locations = {
+            oak: { lat: 37.7213, lng: -122.2207, name: 'Oakland (OAK)', color: '#0EA5E9', icon: '✈️' },
+            slc: { lat: 40.7884, lng: -111.8761, name: 'Salt Lake City (SLC)', color: '#0EA5E9', icon: '✈️' },
+            idaho: { lat: 43.4635, lng: -111.9273, name: 'Idaho Falls', color: '#F59E0B', icon: '🏨' },
+            grant: { lat: 44.4268, lng: -110.8429, name: 'Grant Village', color: '#10B981', icon: '⛺' },
+            canyon: { lat: 44.7928, lng: -110.5006, name: 'Canyon Village', color: '#A855F7', icon: '⛺' }
+        };
+
+        // Initialize map centered on the trip area
+        const map = L.map('map').setView([43, -111.5], 7);
+        
+        // Add dark-themed tiles
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap, &copy; CartoDB',
+            maxZoom: 12
+        }).addTo(map);
+
+        // Function to create custom markers
+        function createMarker(location, animate = false) {
+            const markerDiv = document.createElement('div');
+            markerDiv.innerHTML = location.icon;
+            markerDiv.style.fontSize = '28px';
+            markerDiv.style.cursor = 'pointer';
+            markerDiv.style.filter = 'drop-shadow(0 0 8px rgba(0, 0, 0, 0.8))';
+            if (animate) {
+                markerDiv.classList.add('pulse-marker');
+            }
+
+            const customIcon = L.divIcon({
+                html: markerDiv.outerHTML,
+                iconSize: [32, 32],
+                className: 'custom-marker'
+            });
+
+            const marker = L.marker([location.lat, location.lng], { icon: customIcon })
+                .bindPopup(`<div class="font-bold text-gray-900">${location.name}</div>`, { 
+                    className: 'rounded-lg'
+                });
+            
+            marker.addTo(map);
+            return marker;
+        }
+
+        // Function to draw animated polyline
+        function drawAnimatedRoute(from, to, color, duration = 2) {
+            const route = L.polyline([[from.lat, from.lng], [to.lat, to.lng]], {
+                color: color,
+                weight: 3,
+                opacity: 0.8,
+                dashArray: '8, 8',
+                className: 'animated-route'
+            }).addTo(map);
+
+            // Add glow effect
+            L.polyline([[from.lat, from.lng], [to.lat, to.lng]], {
+                color: color,
+                weight: 8,
+                opacity: 0.15,
+                dashArray: '8, 8'
+            }).addTo(map);
+
+            return route;
+        }
+
+        // Function to animate the entire journey
+        function animateJourney() {
+            // Clear existing routes (keep markers)
+            map.eachLayer(layer => {
+                if (layer instanceof L.Polyline) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            // Reset animations
+            document.querySelectorAll('.custom-marker').forEach(m => m.classList.remove('pulse-marker'));
+
+            // Stagger the animations
+            setTimeout(() => {
+                createMarker(locations.oak);
+                createMarker(locations.slc);
+                drawAnimatedRoute(locations.oak, locations.slc, '#0EA5E9', 2);
+            }, 0);
+
+            setTimeout(() => {
+                createMarker(locations.idaho);
+                drawAnimatedRoute(locations.slc, locations.idaho, '#F59E0B', 2);
+            }, 2500);
+
+            setTimeout(() => {
+                createMarker(locations.grant, true);
+                drawAnimatedRoute(locations.idaho, locations.grant, '#10B981', 2);
+            }, 5000);
+
+            setTimeout(() => {
+                createMarker(locations.canyon, true);
+                drawAnimatedRoute(locations.grant, locations.canyon, '#A855F7', 1.5);
+            }, 7500);
+        }
+
+        // Initialize map on load
+        window.addEventListener('load', () => {
+            animateJourney();
+        });
+
+        // Replay button
+        document.getElementById('resetMapBtn').addEventListener('click', animateJourney);
+
+        // Adjust map on window resize
+        window.addEventListener('resize', () => {
+            map.invalidateSize();
+        });
+    </script>
 
 </body>
 </html>
