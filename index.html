@@ -370,15 +370,18 @@
 
         let homeItems = [];
         let walmartItems = [];
+        let isSyncing = false; // Flag to prevent background sync loops during manual updates
 
-        async function loadCloudData() {
+        async function loadCloudData(isBackground = false) {
+            if (isSyncing && isBackground) return; 
             try {
                 const response = await fetch(API_URL);
                 if (response.status === 200) {
                     const data = await response.json();
                     homeItems = data.home || [];
                     walmartItems = data.walmart || [];
-                } else {
+                } else if (!isBackground) {
+                    // Seed defaults if fresh installation
                     homeItems = [
                         { text: 'Binoculars & Cameras', checked: false },
                         { text: 'Warm Layered Jackets', checked: false },
@@ -397,7 +400,8 @@
         }
 
         async function saveCloudData() {
-            updateUIOnly();
+            isSyncing = true;
+            updateUIOnly(); // Local optimistic change update
             try {
                 await fetch(API_URL, {
                     method: 'POST',
@@ -406,6 +410,8 @@
                 });
             } catch (err) {
                 console.error("Cloud push sync failed", err);
+            } finally {
+                isSyncing = false;
             }
         }
 
@@ -502,6 +508,12 @@
 
         window.addEventListener('load', () => {
             loadCloudData();
+            
+            // Background polling loop syncing database changes every 5 seconds dynamically
+            setInterval(() => {
+                loadCloudData(true);
+            }, 5000);
+
             setTimeout(() => document.querySelector('[data-day="5"]').click(), 200);
         });
     </script>
