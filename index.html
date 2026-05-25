@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-fullscreen/2.4.0/Control.FullScreen.min.js"></script>
     <style>
         @keyframes drawLine {
-            from { stroke-dashoffset: 5000; }
+            from { stroke-dashoffset: 4000; }
             to { stroke-dashoffset: 0; }
         }
         @keyframes pulse-marker {
@@ -20,7 +20,7 @@
             50% { transform: scale(1.15); }
         }
         .animated-route {
-            stroke-dasharray: 5000;
+            stroke-dasharray: 4000;
             animation: drawLine 4s ease-in-out forwards;
         }
         .pulse-marker {
@@ -113,7 +113,7 @@
                     <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-calendar-days text-lg"></i></div>
                     <div>
                         <h2 class="font-bold text-lg tracking-tight text-gray-100">Day-by-Day Journey</h2>
-                        <p class="text-xs text-gray-400 mt-0.5">Click a day to trace explicit road corridors and real infrastructure pathways across the route map</p>
+                        <p class="text-xs text-gray-400 mt-0.5">Click a day to trace ground highway segments precisely on the map routes</p>
                     </div>
                 </div>
                 <button id="resetMapBtn" class="px-4 py-2 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-lg border border-amber-500/30 hover:bg-amber-500/20 transition-colors flex items-center gap-2">
@@ -127,7 +127,7 @@
                     <div class="text-xs font-bold text-amber-500 tracking-wider uppercase mb-2">Select Itinerary Window</div>
                     <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-amber-500/50 bg-amber-500/10 text-amber-400 font-semibold text-sm transition-all" data-day="5">
                         <span class="font-bold">Day 1: Jul 05</span>
-                        <div class="text-xs text-amber-300/70 mt-0.5">Flights & I-15 Corridor to Idaho Falls</div>
+                        <div class="text-xs text-amber-300/70 mt-0.5">Flights & Highway Route to Idaho Falls</div>
                     </button>
                     <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="6">
                         <span class="font-bold">Day 2: Jul 06</span>
@@ -149,7 +149,7 @@
 
                 <div class="lg:col-span-2">
                     <div id="mapContainer" class="relative">
-                        <div id="map" class="w-full h-96 md:h-[420px] bg-gray-800 border border-gray-700 rounded-xl shadow-lg"></div>
+                        <div id="map" class="w-full h-96 md:h-[400px] bg-gray-800 border border-gray-700 rounded-xl shadow-lg"></div>
                         <button id="fullscreenBtn" class="absolute top-4 right-4 z-40 px-3 py-2 bg-white text-gray-700 text-xs font-bold rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors flex items-center gap-1 shadow-md">
                             <i class="fa-solid fa-expand text-sm"></i>
                             <span>Fullscreen</span>
@@ -170,14 +170,12 @@
                     <div class="space-y-2">
                         <div class="flex justify-between text-xs">
                             <span class="font-bold text-gray-300">Delta Air Lines (DL 4134)</span>
-                            <span class="font-mono text-amber-400 font-bold">Ref: HSECV9</span>
                         </div>
                         <div class="bg-gray-900/40 p-3 rounded-xl text-center text-xs text-gray-300">OAK 12:33 PM → SLC 3:29 PM (Sun, Jul 05)</div>
                     </div>
                     <div class="space-y-2 pt-3">
                         <div class="flex justify-between text-xs">
                             <span class="font-bold text-gray-300">Southwest Airlines (WN 3276)</span>
-                            <span class="font-mono text-amber-400 font-bold">Ref: CLH3B2</span>
                         </div>
                         <div class="bg-gray-900/40 p-3 rounded-xl text-center text-xs text-gray-300">SLC 6:25 PM → OAK 7:15 PM (Sat, Jul 11)</div>
                     </div>
@@ -188,7 +186,6 @@
                 <h2 class="font-bold text-base tracking-tight flex items-center gap-3"><i class="fa-solid fa-car text-amber-400"></i>Rental Vehicle Logistics</h2>
                 <div class="text-xs space-y-2 text-gray-300">
                     <div class="font-bold text-white text-sm">Hertz SUV AWD (Jeep Compass or similar)</div>
-                    <div>Confirmation: L57232183D0</div>
                     <div class="grid grid-cols-1 gap-2 mt-2 bg-gray-900/40 p-3 rounded-lg text-[11px]">
                         <div><strong class="text-amber-400">Pickup:</strong> Jul 05, 4:30 PM (SLC Airport Terminal)</div>
                         <div><strong class="text-amber-400">Drop-off:</strong> Jul 11, 4:30 PM (SLC Airport Terminal)</div>
@@ -205,11 +202,11 @@
                     </div>
                     <div class="text-[11px] border-l-2 border-emerald-500 pl-3">
                         <div class="font-bold text-white">Grant Village Lodges</div>
-                        <p class="text-gray-400 mt-0.5">Jul 06 – Jul 09 • Deluxe Lodge 2 Doubles • Itinerary #20603281</p>
+                        <p class="text-gray-400 mt-0.5">Jul 06 – Jul 09 • Deluxe Lodge 2 Doubles</p>
                     </div>
                     <div class="text-[11px] border-l-2 border-purple-500 pl-3">
                         <div class="font-bold text-white">Canyon Lodge & Cabins</div>
-                        <p class="text-gray-400 mt-0.5">Jul 09 – Jul 11 • Deluxe Room 2 Queens • Confirmation: B_52688586</p>
+                        <p class="text-gray-400 mt-0.5">Jul 09 – Jul 11 • Deluxe Room 2 Queens</p>
                     </div>
                 </div>
             </div>
@@ -234,7 +231,6 @@
             canyon: { lat: 44.7342, lng: -110.4892, name: 'Canyon Village', icon: '⛺' }
         };
 
-        // Dense geographical curves tracing precise arterial infrastructure alignments explicitly
         const routesData = {
             slcToIdahoFalls: [
                 [40.7884, -111.8761], [40.8354, -111.9022], [40.9125, -111.8854], [40.9854, -111.9124],
@@ -251,27 +247,21 @@
                 [43.7251, -111.8312], [43.8231, -111.7824], [43.8854, -111.7214], [43.9662, -111.6821],
                 [44.0321, -111.6352], [44.1105, -111.4215], [44.1854, -111.3912], [44.2541, -111.3652],
                 [44.3312, -111.3321], [44.4215, -111.2154], [44.5124, -111.1154], [44.6102, -111.1215],
-                [44.6582, -111.1011], // West Entrance Station Anchor
-                [44.6595, -111.0421], [44.6521, -110.9542], [44.6456, -110.8604], // Madison Junction Corridor Line
-                [44.5954, -110.8431], [44.5312, -110.8112], [44.4604, -110.8281], // Old Faithful Junction
-                [44.4451, -110.8115], [44.4312, -110.7512], [44.4195, -110.6754], [44.4158, -110.5742], // Craig Pass down to West Thumb
-                [44.3931, -110.5569]  // Grant Village
+                [44.6582, -111.1011], [44.6595, -111.0421], [44.6521, -110.9542], [44.6456, -110.8604], 
+                [44.5954, -110.8431], [44.5312, -110.8112], [44.4604, -110.8281], [44.4451, -110.8115], 
+                [44.4312, -110.7512], [44.4195, -110.6754], [44.4158, -110.5742], [44.3931, -110.5569]
             ],
             grantExplorationLoop: [
-                [44.3931, -110.5569], [44.4158, -110.5742], [44.4195, -110.6754], [44.4604, -110.8281], // Old Faithful Segment
-                [44.5312, -110.8112], [44.6456, -110.8604], // Madison Segment
-                [44.6754, -110.8321], [44.7275, -110.7014], // Norris Basin
-                [44.7295, -110.5854], [44.7342, -110.4892], // Canyon Village Junction
-                [44.6954, -110.4542], [44.6341, -110.4435], // Hayden Valley Line
-                [44.5651, -110.4002], // Lake Village Junction
-                [44.5321, -110.3954], [44.4954, -110.4112], [44.4542, -110.5124], [44.4158, -110.5742], // Shoreline Corridor (Strictly hugging west edge)
-                [44.3931, -110.5569]
+                [44.3931, -110.5569], [44.4158, -110.5742], [44.4195, -110.6754], [44.4604, -110.8281], 
+                [44.5312, -110.8112], [44.6456, -110.8604], [44.6754, -110.8321], [44.7275, -110.7014], 
+                [44.7295, -110.5854], [44.7342, -110.4892], [44.6954, -110.4542], [44.6341, -110.4435], 
+                [44.5651, -110.4002], [44.5321, -110.3954], [44.4954, -110.4112], [44.4542, -110.5124], 
+                [44.4158, -110.5742], [44.3931, -110.5569]
             ],
             grantToCanyon: [
-                [44.3931, -110.5569], [44.4158, -110.5742], // West Thumb Baseline
-                [44.4542, -110.5124], [44.4954, -110.4112], [44.5321, -110.3954], [44.5651, -110.4002], // Shoreline highway trace curving up to Lake Junction
-                [44.6012, -110.4184], [44.6341, -110.4435], // Hayden Valley Corridor Track
-                [44.6854, -110.4552], [44.7342, -110.4892]  // Canyon Village Arrival
+                [44.3931, -110.5569], [44.4158, -110.5742], [44.4542, -110.5124], [44.4954, -110.4112], 
+                [44.5321, -110.3954], [44.5651, -110.4002], [44.6012, -110.4184], [44.6341, -110.4435], 
+                [44.6854, -110.4552], [44.7342, -110.4892]
             ]
         };
 
