@@ -364,21 +364,52 @@
             L.marker([loc.lat, loc.lng], { icon: L.divIcon({ html: el.outerHTML, iconSize: [30, 30], className: 'c-mark' }) }).bindPopup(loc.name).addTo(map);
         }
 
-        // --- SPLIT STORAGE SYSTEM CONTROLLERS ---
-        let homeItems = JSON.parse(localStorage.getItem('y_home_items')) || [
-            { text: 'Binoculars & Cameras', checked: false },
-            { text: 'Warm Layered Jackets', checked: false },
-            { text: 'Hiking Boots', checked: false }
-        ];
+        // --- LIVE CLOUD REPLICATION ENGINE ---
+        const TRIP_SECRET_KEY = "goyal_yellowstone_2026"; 
+        const API_URL = `https://kvdb.io/MN967v8vXw7g6pB6mZ8asF/${TRIP_SECRET_KEY}`;
 
-        let walmartItems = JSON.parse(localStorage.getItem('y_walmart_items')) || [
-            { text: 'Bear Spray', checked: false },
-            { text: 'Gallons of Water', checked: false },
-            { text: 'Trail Snacks & Mixes', checked: false }
-        ];
+        let homeItems = [];
+        let walmartItems = [];
 
-        function renderList(storageKey, itemsArray, elementId, countId, checkColor) {
-            localStorage.setItem(storageKey, JSON.stringify(itemsArray));
+        async function loadCloudData() {
+            try {
+                const response = await fetch(API_URL);
+                if (response.status === 200) {
+                    const data = await response.json();
+                    homeItems = data.home || [];
+                    walmartItems = data.walmart || [];
+                } else {
+                    homeItems = [
+                        { text: 'Binoculars & Cameras', checked: false },
+                        { text: 'Warm Layered Jackets', checked: false },
+                        { text: 'Hiking Boots', checked: false }
+                    ];
+                    walmartItems = [
+                        { text: 'Bear Spray', checked: false },
+                        { text: 'Gallons of Water', checked: false },
+                        { text: 'Trail Snacks & Mixes', checked: false }
+                    ];
+                }
+                updateUIOnly();
+            } catch (err) {
+                console.error("Cloud fetch failed", err);
+            }
+        }
+
+        async function saveCloudData() {
+            updateUIOnly();
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ home: homeItems, walmart: walmartItems })
+                });
+            } catch (err) {
+                console.error("Cloud push sync failed", err);
+            }
+        }
+
+        function renderList(itemsArray, elementId, countId, checkColor, listTypeKey) {
             const listEl = document.getElementById(elementId);
             const countEl = document.getElementById(countId);
             listEl.innerHTML = '';
@@ -389,11 +420,11 @@
                 const li = document.createElement('li');
                 li.className = `flex items-center justify-between p-2.5 rounded-xl border transition-all ${item.checked ? 'bg-gray-900/20 border-gray-800 text-gray-500 line-through' : 'bg-gray-900/60 border-gray-700 text-gray-200'}`;
                 li.innerHTML = `
-                    <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="toggleItem('${storageKey}', ${idx})">
+                    <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="toggleItem('${listTypeKey}', ${idx})">
                         <i class="fa-regular ${item.checked ? 'fa-circle-check ' + checkColor : 'fa-circle text-gray-600'} text-base"></i>
                         <span class="text-xs font-medium tracking-wide break-all">${item.text}</span>
                     </div>
-                    <button onclick="removeItem('${storageKey}', ${idx})" class="text-gray-600 hover:text-red-400 px-2 py-1 transition-colors">
+                    <button onclick="removeItem('${listTypeKey}', ${idx})" class="text-gray-600 hover:text-red-400 px-2 py-1 transition-colors">
                         <i class="fa-solid fa-trash-can text-xs"></i>
                     </button>
                 `;
@@ -402,9 +433,9 @@
             countEl.innerText = `${completed} / ${itemsArray.length} checked`;
         }
 
-        function updateAllLists() {
-            renderList('y_home_items', homeItems, 'homeList', 'homeCount', 'text-sky-400');
-            renderList('y_walmart_items', walmartItems, 'walmartList', 'walmartCount', 'text-amber-500');
+        function updateUIOnly() {
+            renderList(homeItems, 'homeList', 'homeCount', 'text-sky-400', 'home');
+            renderList(walmartItems, 'walmartList', 'walmartCount', 'text-amber-500', 'walmart');
         }
 
         document.getElementById('homeForm').addEventListener('submit', function(e) {
@@ -412,7 +443,7 @@
             const input = document.getElementById('homeInput');
             if (input.value.trim()) {
                 homeItems.push({ text: input.value.trim(), checked: false });
-                input.value = ''; updateAllLists();
+                input.value = ''; saveCloudData();
             }
         });
 
@@ -421,23 +452,23 @@
             const input = document.getElementById('walmartInput');
             if (input.value.trim()) {
                 walmartItems.push({ text: input.value.trim(), checked: false });
-                input.value = ''; updateAllLists();
+                input.value = ''; saveCloudData();
             }
         });
 
-        window.toggleItem = function(key, idx) {
-            if (key === 'y_home_items') homeItems[idx].checked = !homeItems[idx].checked;
+        window.toggleItem = function(listType, idx) {
+            if (listType === 'home') homeItems[idx].checked = !homeItems[idx].checked;
             else walmartItems[idx].checked = !walmartItems[idx].checked;
-            updateAllLists();
+            saveCloudData();
         };
 
-        window.removeItem = function(key, idx) {
-            if (key === 'y_home_items') homeItems.splice(idx, 1);
+        window.removeItem = function(listType, idx) {
+            if (listType === 'home') homeItems.splice(idx, 1);
             else walmartItems.splice(idx, 1);
-            updateAllLists();
+            saveCloudData();
         };
 
-        // --- BUTTON BINDINGS & INIT ---
+        // --- BUTTON BINDINGS & REFRESH ---
         document.querySelectorAll('.dayBtn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.dayBtn').forEach(b => b.className = "dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all");
@@ -470,7 +501,7 @@
         });
 
         window.addEventListener('load', () => {
-            updateAllLists();
+            loadCloudData();
             setTimeout(() => document.querySelector('[data-day="5"]').click(), 200);
         });
     </script>
