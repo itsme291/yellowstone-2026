@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,20 +12,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-fullscreen/2.4.0/Control.FullScreen.min.js"></script>
     <style>
         @keyframes drawLine {
-            from {
-                stroke-dashoffset: 1000;
-            }
-            to {
-                stroke-dashoffset: 0;
-            }
+            from { stroke-dashoffset: 1000; }
+            to { stroke-dashoffset: 0; }
         }
         @keyframes pulse-marker {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.15);
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
         }
         .animated-route {
             stroke-dasharray: 1000;
@@ -41,30 +32,7 @@
         }
         .leaflet-control-attribution {
             background-color: rgba(255, 255, 255, 0.9) !important;
-            border-color: rgba(200, 200, 200, 1) !important;
             color: rgba(80, 80, 80, 1) !important;
-        }
-        .leaflet-control-zoom {
-            border-radius: 0.75rem !important;
-            background-color: rgba(255, 255, 255, 0.95) !important;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2) !important;
-        }
-        .leaflet-control-zoom-in, .leaflet-control-zoom-out {
-            border: 1px solid rgba(200, 200, 200, 1) !important;
-            color: rgba(59, 130, 246, 1) !important;
-            background-color: rgba(255, 255, 255, 0.95) !important;
-            font-weight: bold !important;
-        }
-        .leaflet-control-zoom-in:hover, .leaflet-control-zoom-out:hover {
-            background-color: rgba(240, 240, 240, 0.95) !important;
-        }
-        .leaflet-fullscreen-button {
-            border-radius: 0.5rem !important;
-            background-color: rgba(255, 255, 255, 0.95) !important;
-            border: 1px solid rgba(200, 200, 200, 1) !important;
-        }
-        .leaflet-fullscreen-button:hover {
-            background-color: rgba(240, 240, 240, 0.95) !important;
         }
         #map.fullscreen-map {
             position: fixed;
@@ -106,9 +74,6 @@
             transition: all 0.2s;
             white-space: nowrap;
         }
-        .floating-day-btn:hover {
-            background: rgba(230, 230, 230, 0.9);
-        }
         .floating-day-btn.active {
             background: rgba(59, 130, 246, 0.2);
             border-color: rgba(59, 130, 246, 1);
@@ -118,7 +83,7 @@
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen font-sans antialiased selection:bg-amber-500 selection:text-gray-900">
 
-    <header class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-800 execution-layer">
+    <header class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-800">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-mountain-sun text-amber-500 text-2xl"></i>
@@ -135,16 +100,14 @@
         
         <section class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-amber-600 via-amber-700 to-amber-900 shadow-2xl p-6 md:p-10 text-white">
             <div class="absolute inset-0 bg-black/20 mix-blend-multiply"></div>
-            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                <div>
-                    <p class="text-xs font-bold tracking-widest uppercase text-amber-200 mb-1">July 05 – July 11, 2026</p>
-                    <h1 class="text-3xl md:text-5xl font-black tracking-tight mb-2">The Grand Adventure</h1>
-                    <p class="text-amber-100/90 text-sm md:text-base max-w-xl">4 Travelers • Outbound via Delta • Inbound via Southwest • Full Ground Transit Secured via Hertz SUV</p>
-                </div>
+            <div class="relative z-10">
+                <p class="text-xs font-bold tracking-widest uppercase text-amber-200 mb-1">July 05 – July 11, 2026</p>
+                <h1 class="text-3xl md:text-5xl font-black tracking-tight mb-2">The Grand Adventure</h1>
+                <p class="text-amber-100/90 text-sm md:text-base max-w-xl">4 Travelers • Outbound via Delta • Inbound via Southwest • Full Ground Transit Secured via Hertz SUV</p>
             </div>
         </section>
 
-        <section class="relative rounded-3xl overflow-hidden bg-gray-800 border border-gray-700 shadow-2xl p-6 md:p-8">
+        <section class="relative rounded-3xl bg-gray-800 border border-gray-700 shadow-2xl p-6 md:p-8">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-calendar-days text-lg"></i></div>
@@ -153,4 +116,237 @@
                         <p class="text-xs text-gray-400 mt-0.5">Click a day to see your movement and activities on the map</p>
                     </div>
                 </div>
-                <button id="resetMapBtn" class="px-4 py-2 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-lg border border-amber-500/30 hover:bg-amber-500/20 transition-colors flex items-center gap-2
+                <button id="resetMapBtn" class="px-4 py-2 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-lg border border-amber-500/30 hover:bg-amber-500/20 transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-rotate-right"></i>
+                    <span>Replay All</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="space-y-2" id="dayButtons">
+                    <div class="text-xs font-bold text-amber-500 tracking-wider uppercase mb-2">Select Day</div>
+                    <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-amber-500/50 bg-amber-500/10 text-amber-400 font-semibold text-sm transition-all" data-day="5">
+                        <span class="font-bold">Day 1: Jul 05</span>
+                        <div class="text-xs text-amber-300/70 mt-0.5">Flights & Drive to Idaho Falls</div>
+                    </button>
+                    <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="6">
+                        <span class="font-bold">Day 2: Jul 06</span>
+                        <div class="text-xs text-gray-400 mt-0.5">Drive to Grant Village</div>
+                    </button>
+                    <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="6-9">
+                        <span class="font-bold">Days 3-5: Jul 06-09</span>
+                        <div class="text-xs text-gray-400 mt-0.5">Grant Village Base</div>
+                    </button>
+                    <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="9">
+                        <span class="font-bold">Day 6: Jul 09</span>
+                        <div class="text-xs text-gray-400 mt-0.5">To Canyon Lodge</div>
+                    </button>
+                    <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="11">
+                        <span class="font-bold">Day 7: Jul 11</span>
+                        <div class="text-xs text-gray-400 mt-0.5">Return to SLC & Fly Home</div>
+                    </button>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <div id="mapContainer" class="relative">
+                        <div id="map" class="w-full h-96 md:h-[400px] bg-gray-800 border border-gray-700 rounded-xl shadow-lg"></div>
+                        <button id="fullscreenBtn" class="absolute top-4 right-4 z-40 px-3 py-2 bg-white text-gray-700 text-xs font-bold rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors flex items-center gap-1 shadow-md">
+                            <i class="fa-solid fa-expand text-sm"></i>
+                            <span>Fullscreen</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-6 bg-gray-900/50 rounded-xl border border-gray-700">
+                <div id="dayDetails" class="space-y-3"></div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            
+            <div class="lg:col-span-1 bg-gray-800 rounded-2xl border border-gray-700 p-5 shadow-xl">
+                <h3 class="text-sm font-bold tracking-wider text-gray-400 uppercase mb-4 flex items-center justify-between">
+                    <span>Route Timeline</span>
+                    <i class="fa-solid fa-route text-amber-500"></i>
+                </h3>
+                <div class="space-y-6 relative before:absolute before:viewport before:left-4 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-700">
+                    <div class="relative flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-amber-500 text-gray-900 flex items-center justify-center font-bold text-xs shrink-0 z-10">05</div><div><h4 class="font-bold text-sm text-gray-100">Sunday, July 5</h4><p class="text-xs text-gray-400 mt-0.5">Fly OAK → SLC • Night in Idaho Falls</p></div></div>
+                    <div class="relative flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center font-bold text-xs shrink-0 z-10">06</div><div><h4 class="font-bold text-sm text-gray-300">Monday, July 6</h4><p class="text-xs text-gray-400 mt-0.5">Drive to Yellowstone • Grant Village</p></div></div>
+                    <div class="relative flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center font-bold text-xs shrink-0 z-10">09</div><div><h4 class="font-bold text-sm text-gray-300">Thursday, July 9</h4><p class="text-xs text-gray-400 mt-0.5">Transfer to Canyon Village</p></div></div>
+                    <div class="relative flex gap-4 items-start"><div class="w-8 h-8 rounded-full bg-gray-700 text-gray-300 flex items-center justify-center font-bold text-xs shrink-0 z-10">11</div><div><h4 class="font-bold text-sm text-gray-300">Saturday, July 11</h4><p class="text-xs text-gray-400 mt-0.5">Drive to SLC • Fly SLC → OAK</p></div></div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl overflow-hidden">
+                    <div class="bg-gray-750 px-6 py-4 border-b border-gray-700 flex items-center justify-between">
+                        <h2 class="font-bold text-base tracking-tight flex items-center gap-3"><i class="fa-solid fa-plane text-indigo-400"></i>Air Travel Logistics</h2>
+                    </div>
+                    <div class="p-6 space-y-6 divide-y divide-gray-700">
+                        <div class="space-y-4">
+                            <div class="flex justify-between">
+                                <h3 class="font-bold text-sm text-gray-100">Delta Air Lines (DL 4134)</h3>
+                                <span class="font-mono text-xs text-amber-400 font-bold">Ref: HSECV9</span>
+                            </div>
+                            <div class="bg-gray-900/50 p-4 rounded-xl text-center text-xs">OAK 12:33 PM → SLC 3:29 PM (Sun, Jul 05)</div>
+                        </div>
+                        <div class="space-y-4 pt-4">
+                            <div class="flex justify-between">
+                                <h3 class="font-bold text-sm text-gray-100">Southwest Airlines (WN 3276)</h3>
+                                <span class="font-mono text-xs text-amber-400 font-bold">Ref: CLH3B2</span>
+                            </div>
+                            <div class="bg-gray-900/50 p-4 rounded-xl text-center text-xs">SLC 6:25 PM → OAK 7:15 PM (Sat, Jul 11)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-4">
+                    <h2 class="font-bold text-base tracking-tight flex items-center gap-3"><i class="fa-solid fa-car text-amber-400"></i>Rental Vehicle Logistics</h2>
+                    <div class="text-sm">
+                        <div class="font-bold">Hertz SUV AWD (Jeep Compass or similar)</div>
+                        <div class="text-xs text-gray-400 mt-1">Confirmation: L57232183D0</div>
+                        <div class="grid grid-cols-2 gap-4 mt-4 text-xs bg-gray-900/40 p-3 rounded-lg">
+                            <div><strong>Pickup:</strong> Jul 05, 4:30 PM (SLC)</div>
+                            <div><strong>Drop-off:</strong> Jul 11, 4:30 PM (SLC)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-6">
+                    <h2 class="font-bold text-base tracking-tight flex items-center gap-3"><i class="fa-solid fa-hotel text-emerald-400"></i>Lodging Accommodations</h2>
+                    <div class="space-y-4 text-xs border-l-2 border-amber-500 pl-4">
+                        <div class="font-bold text-sm text-white">Holiday Inn Express Idaho Falls</div>
+                        <p class="text-gray-400">Jul 05 – Jul 06 • 2 Queen Standard</p>
+                    </div>
+                    <div class="space-y-4 text-xs border-l-2 border-gray-700 pl-4">
+                        <div class="font-bold text-sm text-white">Grant Village Lodges (Yellowstone)</div>
+                        <p class="text-gray-400">Jul 06 – Jul 09 • Deluxe Lodge 2 Doubles • Itinerary #20603281</p>
+                    </div>
+                    <div class="space-y-4 text-xs border-l-2 border-gray-700 pl-4">
+                        <div class="font-bold text-sm text-white">Canyon Lodge & Cabins (Yellowstone)</div>
+                        <p class="text-gray-400">Jul 09 – Jul 11 • Deluxe 2 Queen • Confirmation: B_52688586</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="floatingDayBar" class="flex gap-2">
+        <button class="floating-day-btn active" data-day="5">Jul 5</button>
+        <button class="floating-day-btn" data-day="6">Jul 6</button>
+        <button class="floating-day-btn" data-day="6-9">Jul 6-9</button>
+        <button class="floating-day-btn" data-day="9">Jul 9</button>
+        <button class="floating-day-btn" data-day="11">Jul 11</button>
+        <button id="exitFullscreenBtn" class="floating-day-btn" style="background: rgba(239, 68, 68, 0.1); color: red; border-color: red;">Exit</button>
+    </div>
+
+    <script>
+        const locations = {
+            oak: { lat: 37.7213, lng: -122.2207, name: 'Oakland (OAK)', icon: '✈️' },
+            slc: { lat: 40.7884, lng: -111.8761, name: 'Salt Lake City (SLC)', icon: '✈️' },
+            idaho: { lat: 43.4635, lng: -111.9273, name: 'Idaho Falls', icon: '🏨' },
+            grant: { lat: 44.3931, lng: -110.5569, name: 'Grant Village', icon: '⛺' },
+            canyon: { lat: 44.7342, lng: -110.4892, name: 'Canyon Village', icon: '⛺' }
+        };
+
+        const routesData = {
+            slcToIdahoFalls: [[40.7884, -111.8761], [41.2230, -111.9738], [42.8621, -112.4414], [43.4635, -111.9273]],
+            idahoFallsToGrant: [[43.4635, -111.9273], [43.9662, -111.6821], [44.6582, -111.1011], [44.4601, -110.8284], [44.3931, -110.5569]],
+            grantExplorationLoop: [[44.3931, -110.5569], [44.4601, -110.8284], [44.5612, -110.8710], [44.6210, -110.4512], [44.3931, -110.5569]],
+            grantToCanyon: [[44.3931, -110.5569], [44.5421, -110.3214], [44.7342, -110.4892]]
+        };
+
+        const dayDetails = {
+            '5': { title: 'Sunday, July 5 - Flight & Drive Day', details: ['12:33 PM - Depart Oakland (OAK) on Delta DL 4134', '3:29 PM - Arrive Salt Lake City (SLC)', '4:30 PM - Pickup Midsize SUV at Hertz terminal desk', '7:45 PM - Check-in Holiday Inn Express, Idaho Falls'] },
+            '6': { title: 'Monday, July 6 - Drive to Grant Village', details: ['8:00 AM - Depart Idaho Falls north on US-20', '11:00 AM - Enter Yellowstone South Loop framework', '2:30 PM - Check-in Grand Village Lodges base'] },
+            '6-9': { title: 'July 6-9 - Grant Village Local Exploration', details: ['Explore Old Faithful Geyser basins', 'Hike Grand Prismatic Overlook trail loops', 'View wildlife areas surrounding Yellowstone Lake corridors'] },
+            '9': { title: 'Thursday, July 9 - Shift to Canyon Village', details: ['9:00 AM - Check out from Grant Village driving north via Hayden Valley lines', '12:00 PM - Check-in Canyon Lodge & Cabins inside the park', 'Afternoon - Tour the Grand Canyon of the Yellowstone rims'] },
+            '11': { title: 'Saturday, July 11 - Exit Journey Home', details: ['8:00 AM - Check out Canyon Lodge, track back out through west entrance grid', '1:30 PM - Return vehicle asset to SLC airport terminal lots', '6:25 PM - Depart SLC via Southwest WN 3276 back to OAK'] }
+        };
+
+        const map = L.map('map').setView([42.5, -111.5], 6);
+        L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 13, opacity: 0.95 }).addTo(map);
+
+        function drawAnimatedPath(latlngs, color) {
+            L.polyline(latlngs, { color: color, weight: 4, className: 'animated-route' }).addTo(map);
+        }
+
+        function showDay(day) {
+            map.eachLayer(l => { if (l instanceof L.Polyline || l instanceof L.Marker) map.removeLayer(l); });
+            let bounds = L.latLngBounds();
+
+            if (day === '5') {
+                createMarker(locations.oak); createMarker(locations.slc); createMarker(locations.idaho);
+                drawAnimatedPath([[locations.oak.lat, locations.oak.lng], [locations.slc.lat, locations.slc.lng]], '#0369A1');
+                setTimeout(() => drawAnimatedPath(routesData.slcToIdahoFalls, '#DC2626'), 1000);
+                bounds.extend([locations.oak.lat, locations.oak.lng]); bounds.extend([locations.idaho.lat, locations.idaho.lng]);
+            } else if (day === '6') {
+                createMarker(locations.idaho); createMarker(locations.grant, true);
+                drawAnimatedPath(routesData.idahoFallsToGrant, '#F59E0B');
+                bounds.extend([locations.idaho.lat, locations.idaho.lng]); bounds.extend([locations.grant.lat, locations.grant.lng]);
+            } else if (day === '6-9') {
+                createMarker(locations.grant, true);
+                drawAnimatedPath(routesData.grantExplorationLoop, '#10B981');
+                routesData.grantExplorationLoop.forEach(c => bounds.extend(c));
+            } else if (day === '9') {
+                createMarker(locations.grant); createMarker(locations.canyon, true);
+                drawAnimatedPath(routesData.grantToCanyon, '#8B5CF6');
+                bounds.extend([locations.grant.lat, locations.grant.lng]); bounds.extend([locations.canyon.lat, locations.canyon.lng]);
+            } else if (day === '11') {
+                createMarker(locations.canyon); createMarker(locations.slc); createMarker(locations.oak);
+                const returnDrive = [...routesData.idahoFallsToGrant, ...routesData.slcToIdahoFalls].reverse();
+                drawAnimatedPath(returnDrive, '#8B5CF6');
+                setTimeout(() => drawAnimatedPath([[locations.slc.lat, locations.slc.lng], [locations.oak.lat, locations.oak.lng]], '#0369A1'), 1000);
+                bounds.extend([locations.canyon.lat, locations.canyon.lng]); bounds.extend([locations.oak.lat, locations.oak.lng]);
+            }
+
+            setTimeout(() => { if (bounds.isValid()) map.fitBounds(bounds, { padding: [30, 30] }); }, 200);
+            
+            const details = dayDetails[day];
+            document.getElementById('dayDetails').innerHTML = `
+                <h3 class="font-bold text-base text-amber-400">${details.title}</h3>
+                <ul class="space-y-1 text-sm text-gray-300">${details.details.map(d => `<li>• ${d}</li>`).join('')}</ul>
+            `;
+        }
+
+        function createMarker(loc, anim = false) {
+            const el = document.createElement('div'); el.innerHTML = loc.icon; el.style.fontSize = '24px';
+            if (anim) el.classList.add('pulse-marker');
+            L.marker([loc.lat, loc.lng], { icon: L.divIcon({ html: el.outerHTML, iconSize: [30, 30], className: 'c-mark' }) }).bindPopup(loc.name).addTo(map);
+        }
+
+        document.querySelectorAll('.dayBtn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.dayBtn').forEach(b => b.className = "dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all");
+                this.className = "dayBtn w-full text-left px-4 py-3 rounded-lg border border-amber-500/50 bg-amber-500/10 text-amber-400 font-semibold text-sm transition-all";
+                showDay(this.dataset.day);
+            });
+        });
+
+        document.getElementById('resetMapBtn').addEventListener('click', () => document.querySelector('[data-day="5"]').click());
+        window.addEventListener('load', () => setTimeout(() => document.querySelector('[data-day="5"]').click(), 200));
+        window.addEventListener('resize', () => map.invalidateSize());
+
+        document.getElementById('fullscreenBtn').addEventListener('click', () => {
+            document.getElementById('mapContainer').classList.add('fullscreen-map');
+            document.getElementById('floatingDayBar').classList.add('active');
+            setTimeout(() => map.invalidateSize(), 150);
+        });
+
+        document.getElementById('exitFullscreenBtn').addEventListener('click', () => {
+            document.getElementById('mapContainer').classList.remove('fullscreen-map');
+            document.getElementById('floatingDayBar').classList.remove('active');
+            setTimeout(() => map.invalidateSize(), 150);
+        });
+
+        document.querySelectorAll('#floatingDayBar .floating-day-btn:not(#exitFullscreenBtn)').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#floatingDayBar .floating-day-btn:not(#exitFullscreenBtn)').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                showDay(this.dataset.day);
+            });
+        });
+    </script>
+</body>
+</html>
