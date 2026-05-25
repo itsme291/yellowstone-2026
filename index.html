@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-fullscreen/2.4.0/Control.FullScreen.min.js"></script>
     <style>
         @keyframes drawLine {
-            from { stroke-dashoffset: 1500; }
+            from { stroke-dashoffset: 3000; }
             to { stroke-dashoffset: 0; }
         }
         @keyframes pulse-marker {
@@ -20,8 +20,8 @@
             50% { transform: scale(1.15); }
         }
         .animated-route {
-            stroke-dasharray: 1500;
-            animation: drawLine 3.5s ease-in-out forwards;
+            stroke-dasharray: 3000;
+            animation: drawLine 4s ease-in-out forwards;
         }
         .pulse-marker {
             animation: pulse-marker 2s ease-in-out infinite;
@@ -164,7 +164,6 @@
         </section>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            
             <div class="lg:col-span-1 bg-gray-800 rounded-2xl border border-gray-700 p-5 shadow-xl">
                 <h3 class="text-sm font-bold tracking-wider text-gray-400 uppercase mb-4 flex items-center justify-between">
                     <span>Route Timeline</span>
@@ -250,38 +249,44 @@
             canyon: { lat: 44.7342, lng: -110.4892, name: 'Canyon Village', icon: '⛺' }
         };
 
-        // Fully articulated coordinate matrix mapped cleanly to tracking actual interstates and highways
         const routesData = {
             slcToIdahoFalls: [
-                [40.7884, -111.8761], [40.9012, -111.8890], [41.1350, -112.0450],
-                [41.2230, -111.9738], [41.5110, -112.0050], [41.7370, -111.8338],
-                [42.1150, -112.0520], [42.3320, -112.1810], [42.6100, -112.2850],
-                [42.8621, -112.4414], [43.1850, -112.4210], [43.4635, -111.9273]
+                [40.7884, -111.8761], [40.8421, -111.9032], [40.9105, -111.8941], [41.0022, -111.9324],
+                [41.0954, -111.9745], [41.1712, -112.0485], [41.2230, -111.9738], [41.2985, -112.0124],
+                [41.3841, -112.0210], [41.4925, -112.0084], [41.5642, -112.0115], [41.6854, -111.9421],
+                [41.7425, -111.8410], [41.8541, -111.8954], [41.9822, -112.0321], [42.0845, -112.0454],
+                [42.1954, -112.1124], [42.2841, -112.1854], [42.3652, -112.2415], [42.4841, -112.2541],
+                [42.5854, -112.3012], [42.6652, -112.4124], [42.7541, -112.4541], [42.8621, -112.4414],
+                [42.9425, -112.3854], [43.0541, -112.4012], [43.1850, -112.4210], [43.2954, -112.3214],
+                [43.3854, -112.1124], [43.4635, -111.9273]
             ],
             idahoFallsToGrant: [
-                [43.4635, -111.9273], [43.6210, -111.9010], [43.8231, -111.7824],
-                [43.9662, -111.6821], [44.1105, -111.4215], [44.3210, -111.3150],
-                [44.4921, -111.1102], [44.6582, -111.1011], // West Yellowstone Entry
-                [44.6590, -110.9520], [44.6550, -110.8521], [44.5820, -110.8610], // Madison down to Old Faithful
-                [44.4601, -110.8284], [44.4150, -110.7210], [44.3931, -110.5569]  // West Thumb to Grant Village
+                [43.4635, -111.9273], [43.5241, -111.8954], [43.5954, -111.9124], [43.6842, -111.8841],
+                [43.7425, -111.8124], [43.8231, -111.7824], [43.8954, -111.7124], [43.9662, -111.6821],
+                [44.0452, -111.6124], [44.1105, -111.4215], [44.1954, -111.3854], [44.2741, -111.3521],
+                [44.3542, -111.3124], [44.4452, -111.1854], [44.5321, -111.1084], [44.6124, -111.1154],
+                [44.6582, -111.1011], [44.6621, -111.0214], [44.6542, -110.9421], [44.6421, -110.8854],
+                [44.5820, -110.8610], [44.5241, -110.8412], [44.4601, -110.8284], [44.4321, -110.7654],
+                [44.4185, -110.6842], [44.4022, -110.5954], [44.3931, -110.5569]
             ],
             grantExplorationLoop: [
-                [44.3931, -110.5569], [44.4150, -110.7210], [44.4601, -110.8284], // Old Faithful Corridor
-                [44.5410, -110.8110], [44.5612, -110.8710], [44.5821, -110.8015], // Grand Prismatic & Midway
-                [44.7250, -110.7020], [44.6215, -110.4515], [44.5312, -110.3812], // Norris to Lake
-                [44.4150, -110.4211], [44.3931, -110.5569]  // West Thumb back to Base
+                [44.3931, -110.5569], [44.4022, -110.5954], [44.4185, -110.6842], [44.4321, -110.7654],
+                [44.4601, -110.8284], [44.4954, -110.8521], [44.5241, -110.8412], [44.5612, -110.8710],
+                [44.5820, -110.8610], [44.6421, -110.8854], [44.6542, -110.9421], [44.6954, -110.8854],
+                [44.7321, -110.7124], [44.7342, -110.4892], [44.6854, -110.4412], [44.6124, -110.4312],
+                [44.5421, -110.3954], [44.4321, -110.4124], [44.4012, -110.4354], [44.3931, -110.5569]
             ],
             grantToCanyon: [
-                [44.3931, -110.5569], [44.4150, -110.4211], [44.5312, -110.3812], // Up via Lake Village side
-                [44.5850, -110.4010], [44.6251, -110.4352], [44.6710, -110.4450], // Hayden Valley corridor tracking
-                [44.7342, -110.4892] // Arrive Canyon Village
+                [44.3931, -110.5569], [44.4012, -110.4354], [44.4321, -110.4124], [44.4954, -110.3854],
+                [44.5421, -110.3954], [44.5954, -110.4124], [44.6452, -110.4412], [44.6954, -110.4654],
+                [44.7342, -110.4892]
             ]
         };
 
         const dayDetails = {
             '5': { title: 'Sunday, July 5 - Flight & Drive Day', details: ['12:33 PM - Depart Oakland (OAK) on Delta DL 4134', '3:29 PM - Arrive Salt Lake City (SLC)', '4:30 PM - Pickup Midsize SUV at Hertz terminal desk', '7:45 PM - Check-in Holiday Inn Express, Idaho Falls via I-15 North'] },
-            '6': { title: 'Monday, July 6 - Drive to Grant Village', details: ['8:00 AM - Depart Idaho Falls north on US-20', '11:00 AM - Enter Yellowstone South Entrance via Madison junctions', '2:30 PM - Check-in Grand Village Lodges base'] },
-            '6-9': { title: 'July 6-9 - Grant Village Local Exploration', details: ['Explore Old Faithful Geyser basins along the Grand Loop layout', 'Hike Grand Prismatic Overlook trail networks', 'View wildlife areas surrounding Yellowstone Lake highway lines'] },
+            '6': { title: 'Monday, July 6 - Drive to Grant Village', details: ['8:00 AM - Depart Idaho Falls north on US-20 corridor', '11:00 AM - Enter Yellowstone West Entrance tracking Madison and Old Faithful roadways', '2:30 PM - Check-in Grand Village Lodges base'] },
+            '6-9': { title: 'July 6-9 - Grant Village Local Exploration', details: ['Explore Old Faithful Geyser infrastructure along the lower loop layout', 'Hike Grand Prismatic Overlook trail networks and boardwalk paths', 'View wildlife areas surrounding Yellowstone Lake highway lines'] },
             '9': { title: 'Thursday, July 9 - Shift to Canyon Village', details: ['9:00 AM - Check out from Grant Village driving north via Hayden Valley road segments', '12:00 PM - Check-in Canyon Lodge & Cabins inside the park', 'Afternoon - Tour the Grand Canyon of the Yellowstone canyon rims'] },
             '11': { title: 'Saturday, July 11 - Exit Journey Home', details: ['8:00 AM - Check out Canyon Lodge, track back out through west entrance grid highways', '1:30 PM - Return vehicle asset to SLC airport terminal lots', '6:25 PM - Depart SLC via Southwest WN 3276 back to OAK'] }
         };
@@ -290,9 +295,7 @@
         L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 13, opacity: 0.95 }).addTo(map);
 
         function drawAnimatedPath(latlngs, color) {
-            // Background glow path
             L.polyline(latlngs, { color: color, weight: 8, opacity: 0.25 }).addTo(map);
-            // Main animated forward processing path
             L.polyline(latlngs, { color: color, weight: 4, opacity: 0.9, className: 'animated-route' }).addTo(map);
         }
 
