@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-fullscreen/2.4.0/Control.FullScreen.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-fullscreen/2.4.0/Control.FullScreen.min.js"></script>
     <style>
         @keyframes drawLine {
             from {
@@ -37,23 +39,79 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         }
         .leaflet-control-attribution {
-            background-color: rgba(17, 24, 39, 0.8) !important;
-            border-color: rgba(55, 65, 81, 1) !important;
-            color: rgba(156, 163, 175, 1) !important;
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            border-color: rgba(200, 200, 200, 1) !important;
+            color: rgba(80, 80, 80, 1) !important;
         }
         .leaflet-control-zoom {
             border-radius: 0.75rem !important;
-            background-color: rgba(31, 41, 55, 0.9) !important;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2) !important;
         }
         .leaflet-control-zoom-in, .leaflet-control-zoom-out {
-            border: 1px solid rgba(55, 65, 81, 1) !important;
-            color: rgba(217, 119, 6, 1) !important;
-            background-color: rgba(31, 41, 55, 0.95) !important;
+            border: 1px solid rgba(200, 200, 200, 1) !important;
+            color: rgba(59, 130, 246, 1) !important;
+            background-color: rgba(255, 255, 255, 0.95) !important;
             font-weight: bold !important;
         }
         .leaflet-control-zoom-in:hover, .leaflet-control-zoom-out:hover {
-            background-color: rgba(55, 65, 81, 0.95) !important;
+            background-color: rgba(240, 240, 240, 0.95) !important;
+        }
+        .leaflet-fullscreen-button {
+            border-radius: 0.5rem !important;
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(200, 200, 200, 1) !important;
+        }
+        .leaflet-fullscreen-button:hover {
+            background-color: rgba(240, 240, 240, 0.95) !important;
+        }
+        #map.fullscreen-map {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            border-radius: 0;
+        }
+        #floatingDayBar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            border: 1px solid rgba(200, 200, 200, 1);
+            padding: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+            display: none;
+            max-width: 90vw;
+            overflow-x: auto;
+        }
+        #floatingDayBar.active {
+            display: block;
+        }
+        .floating-day-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(200, 200, 200, 1);
+            background: rgba(255, 255, 255, 0.8);
+            color: rgba(80, 80, 80, 1);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .floating-day-btn:hover {
+            background: rgba(230, 230, 230, 0.9);
+        }
+        .floating-day-btn.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 1);
+            color: rgba(59, 130, 246, 1);
         }
     </style>
 </head>
@@ -130,28 +188,52 @@
                         <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="11">
                             <span class="font-bold">Day 7: Jul 11</span>
                             <div class="text-xs text-gray-400 mt-0.5">Return to SLC & Fly Home</div>
-                    <div id="map" class="w-full h-96 md:h-[450px] bg-gray-900/50 border border-gray-700 rounded-xl shadow-lg"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Map -->
+                <div class="lg:col-span-2">
+                    <div id="mapContainer" class="relative">
+                        <div id="map" class="w-full h-96 md:h-[450px] bg-gray-200 border border-gray-300 rounded-xl shadow-lg"></div>
+                        <button id="fullscreenBtn" class="absolute top-4 right-4 z-40 px-3 py-2 bg-white text-gray-700 text-xs font-bold rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors flex items-center gap-1 shadow-md">
+                            <i class="fa-solid fa-expand text-sm"></i>
+                            <span>Fullscreen</span>
+                        </button>
+                    </div>
                     
                     <!-- Route Legend -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
                         <div class="flex items-center gap-2 text-xs">
-                            <div class="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-lg shadow-sky-400/50"></div>
-                            <span class="text-gray-300">Flight</span>
+                            <div class="w-2.5 h-2.5 rounded-full bg-sky-500 shadow-lg shadow-sky-500/30"></div>
+                            <span class="text-gray-700">Flight</span>
                         </div>
                         <div class="flex items-center gap-2 text-xs">
-                            <div class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-lg shadow-amber-400/50"></div>
-                            <span class="text-gray-300">Drive to Park</span>
+                            <div class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-lg shadow-amber-500/30"></div>
+                            <span class="text-gray-700">Drive to Park</span>
                         </div>
                         <div class="flex items-center gap-2 text-xs">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50"></div>
-                            <span class="text-gray-300">In-Park Drive</span>
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/30"></div>
+                            <span class="text-gray-700">In-Park Drive</span>
                         </div>
                         <div class="flex items-center gap-2 text-xs">
-                            <div class="w-2.5 h-2.5 rounded-full bg-purple-400 shadow-lg shadow-purple-400/50"></div>
-                            <span class="text-gray-300">Transfer</span>
+                            <div class="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-lg shadow-purple-500/30"></div>
+                            <span class="text-gray-700">Transfer</span>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Floating Day Bar (shown in fullscreen) -->
+            <div id="floatingDayBar" class="flex gap-2">
+                <button class="floating-day-btn active" data-day="5">Jul 5</button>
+                <button class="floating-day-btn" data-day="6">Jul 6</button>
+                <button class="floating-day-btn" data-day="6-9">Jul 6-9</button>
+                <button class="floating-day-btn" data-day="9">Jul 9</button>
+                <button class="floating-day-btn" data-day="11">Jul 11</button>
+                <button id="exitFullscreenBtn" class="floating-day-btn" style="margin-left: auto; background: rgba(239, 68, 68, 0.1); color: rgba(220, 38, 38, 1); border-color: rgba(220, 38, 38, 1);">
+                    <i class="fa-solid fa-compress mr-1"></i>Exit
+                </button>
             </div>
 
             <!-- Day Details Card -->
@@ -461,10 +543,11 @@
         // Initialize map centered on the trip area
         const map = L.map('map').setView([43, -111.5], 7);
         
-        // Add dark-themed tiles
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap, &copy; CartoDB',
-            maxZoom: 12
+        // Add light-themed tiles with more detail (OpenTopoMap for topographic detail)
+        L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap, &copy; OpenTopoMap',
+            maxZoom: 13,
+            opacity: 0.95
         }).addTo(map);
 
         // Function to create custom markers
@@ -536,9 +619,9 @@
                 createMarker(locations.slc);
                 createMarker(locations.idaho);
                 
-                drawAnimatedRoute(locations.oak, locations.slc, '#0EA5E9', 2);
+                drawAnimatedRoute(locations.oak, locations.slc, '#0369A1', 2);
                 setTimeout(() => {
-                    drawAnimatedRoute(locations.slc, locations.idaho, '#F59E0B', 2);
+                    drawAnimatedRoute(locations.slc, locations.idaho, '#DC2626', 2);
                 }, 1500);
                 
                 bounds.extend([locations.oak.lat, locations.oak.lng]);
@@ -549,7 +632,7 @@
                 // July 6: Idaho Falls to Grant Village
                 createMarker(locations.idaho);
                 createMarker(locations.grant, true);
-                drawAnimatedRoute(locations.idaho, locations.grant, '#10B981', 2);
+                drawAnimatedRoute(locations.idaho, locations.grant, '#16A34A', 2);
                 
                 bounds.extend([locations.idaho.lat, locations.idaho.lng]);
                 bounds.extend([locations.grant.lat, locations.grant.lng]);
@@ -565,7 +648,7 @@
                 ];
                 nearby.forEach((pt, idx) => {
                     setTimeout(() => {
-                        drawAnimatedRoute(locations.grant, pt, '#10B981', 1);
+                        drawAnimatedRoute(locations.grant, pt, '#16A34A', 1);
                         bounds.extend([pt.lat, pt.lng]);
                     }, idx * 800);
                 });
@@ -574,7 +657,7 @@
                 // July 9: Grant Village to Canyon Lodge
                 createMarker(locations.grant);
                 createMarker(locations.canyon, true);
-                drawAnimatedRoute(locations.grant, locations.canyon, '#A855F7', 2);
+                drawAnimatedRoute(locations.grant, locations.canyon, '#7C3AED', 2);
                 
                 bounds.extend([locations.grant.lat, locations.grant.lng]);
                 bounds.extend([locations.canyon.lat, locations.canyon.lng]);
@@ -585,9 +668,9 @@
                 createMarker(locations.slc);
                 createMarker(locations.oak);
                 
-                drawAnimatedRoute(locations.canyon, locations.slc, '#E879F9', 2);
+                drawAnimatedRoute(locations.canyon, locations.slc, '#7C3AED', 2);
                 setTimeout(() => {
-                    drawAnimatedRoute(locations.slc, locations.oak, '#0EA5E9', 2);
+                    drawAnimatedRoute(locations.slc, locations.oak, '#0369A1', 2);
                 }, 1500);
                 
                 bounds.extend([locations.canyon.lat, locations.canyon.lng]);
@@ -649,6 +732,46 @@
         // Adjust map on window resize
         window.addEventListener('resize', () => {
             map.invalidateSize();
+        });
+
+        // Fullscreen functionality
+        document.getElementById('fullscreenBtn').addEventListener('click', () => {
+            const mapContainer = document.getElementById('mapContainer');
+            const floatingBar = document.getElementById('floatingDayBar');
+            const body = document.body;
+            
+            mapContainer.classList.add('fullscreen-map');
+            floatingBar.classList.add('active');
+            body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        });
+
+        document.getElementById('exitFullscreenBtn').addEventListener('click', () => {
+            const mapContainer = document.getElementById('mapContainer');
+            const floatingBar = document.getElementById('floatingDayBar');
+            const body = document.body;
+            
+            mapContainer.classList.remove('fullscreen-map');
+            floatingBar.classList.remove('active');
+            body.style.overflow = 'auto';
+            
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        });
+
+        // Floating day bar button handlers
+        document.querySelectorAll('#floatingDayBar .floating-day-btn:not(#exitFullscreenBtn)').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#floatingDayBar .floating-day-btn:not(#exitFullscreenBtn)').forEach(b => {
+                    b.classList.remove('active');
+                });
+                this.classList.add('active');
+                showDay(this.dataset.day);
+            });
         });
     </script>
 
