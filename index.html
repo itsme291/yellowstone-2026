@@ -364,54 +364,38 @@
             L.marker([loc.lat, loc.lng], { icon: L.divIcon({ html: el.outerHTML, iconSize: [30, 30], className: 'c-mark' }) }).bindPopup(loc.name).addTo(map);
         }
 
-        // --- LIVE CLOUD REPLICATION ENGINE ---
-        const TRIP_SECRET_KEY = "goyal_yellowstone_2026"; 
-        const API_URL = `https://kvdb.io/MN967v8vXw7g6pB6mZ8asF/${TRIP_SECRET_KEY}`;
+        // --- REAL-TIME CLOUD ENGINE (FIREBASE CORNERSTONE) ---
+        const FIREBASE_DB_URL = "https://yellowstone-trip-35a21-default-rtdb.firebaseio.com/.json";
 
         let homeItems = [];
         let walmartItems = [];
-        let isSyncing = false; // Flag to prevent background sync loops during manual updates
 
-        async function loadCloudData(isBackground = false) {
-            if (isSyncing && isBackground) return; 
+        async function syncFromCloud() {
             try {
-                const response = await fetch(API_URL);
-                if (response.status === 200) {
+                const response = await fetch(FIREBASE_DB_URL);
+                if (response.ok) {
                     const data = await response.json();
-                    homeItems = data.home || [];
-                    walmartItems = data.walmart || [];
-                } else if (!isBackground) {
-                    // Seed defaults if fresh installation
-                    homeItems = [
-                        { text: 'Binoculars & Cameras', checked: false },
-                        { text: 'Warm Layered Jackets', checked: false },
-                        { text: 'Hiking Boots', checked: false }
-                    ];
-                    walmartItems = [
-                        { text: 'Bear Spray', checked: false },
-                        { text: 'Gallons of Water', checked: false },
-                        { text: 'Trail Snacks & Mixes', checked: false }
-                    ];
+                    if (data) {
+                        homeItems = data.home || [];
+                        walmartItems = data.walmart || [];
+                        updateUIOnly();
+                    }
                 }
-                updateUIOnly();
             } catch (err) {
-                console.error("Cloud fetch failed", err);
+                console.error("Firebase fetch handshake failed", err);
             }
         }
 
-        async function saveCloudData() {
-            isSyncing = true;
-            updateUIOnly(); // Local optimistic change update
+        async function pushToCloud() {
+            updateUIOnly(); 
             try {
-                await fetch(API_URL, {
-                    method: 'POST',
+                await fetch(FIREBASE_DB_URL, {
+                    method: 'PUT', 
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ home: homeItems, walmart: walmartItems })
                 });
             } catch (err) {
-                console.error("Cloud push sync failed", err);
-            } finally {
-                isSyncing = false;
+                console.error("Firebase write sync interrupted", err);
             }
         }
 
@@ -449,7 +433,7 @@
             const input = document.getElementById('homeInput');
             if (input.value.trim()) {
                 homeItems.push({ text: input.value.trim(), checked: false });
-                input.value = ''; saveCloudData();
+                input.value = ''; pushToCloud();
             }
         });
 
@@ -458,20 +442,20 @@
             const input = document.getElementById('walmartInput');
             if (input.value.trim()) {
                 walmartItems.push({ text: input.value.trim(), checked: false });
-                input.value = ''; saveCloudData();
+                input.value = ''; pushToCloud();
             }
         });
 
         window.toggleItem = function(listType, idx) {
             if (listType === 'home') homeItems[idx].checked = !homeItems[idx].checked;
             else walmartItems[idx].checked = !walmartItems[idx].checked;
-            saveCloudData();
+            pushToCloud();
         };
 
         window.removeItem = function(listType, idx) {
             if (listType === 'home') homeItems.splice(idx, 1);
             else walmartItems.splice(idx, 1);
-            saveCloudData();
+            pushToCloud();
         };
 
         // --- BUTTON BINDINGS & REFRESH ---
@@ -507,13 +491,9 @@
         });
 
         window.addEventListener('load', () => {
-            loadCloudData();
-            
-            // Background polling loop syncing database changes every 5 seconds dynamically
-            setInterval(() => {
-                loadCloudData(true);
-            }, 5000);
-
+            syncFromCloud();
+            // Poll Firebase database changes every 3 seconds across all active sessions
+            setInterval(syncFromCloud, 3000);
             setTimeout(() => document.querySelector('[data-day="5"]').click(), 200);
         });
     </script>
