@@ -113,25 +113,23 @@
                     <div id="dayButtons" class="space-y-2">
                         <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-amber-500/50 bg-amber-500/10 text-amber-400 font-semibold text-sm transition-all hover:bg-amber-500/20" data-day="5">
                             <span class="font-bold">Day 1: Jul 05</span>
-                            <div class="text-xs text-amber-300/70 mt-0.5">Flight OAK → SLC</div>
+                            <div class="text-xs text-amber-300/70 mt-0.5">Flights & Drive to Idaho Falls</div>
                         </button>
                         <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="6">
                             <span class="font-bold">Day 2: Jul 06</span>
-                            <div class="text-xs text-gray-400 mt-0.5">Drive to Yellowstone</div>
+                            <div class="text-xs text-gray-400 mt-0.5">Drive to Grant Village</div>
                         </button>
                         <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="6-9">
                             <span class="font-bold">Days 3-5: Jul 06-09</span>
-                            <div class="text-xs text-gray-400 mt-0.5">Grant Village Exploration</div>
+                            <div class="text-xs text-gray-400 mt-0.5">Grant Village Base</div>
                         </button>
-                        <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="9-11">
-                            <span class="font-bold">Days 6-7: Jul 09-11</span>
-                            <div class="text-xs text-gray-400 mt-0.5">Canyon Village & Return</div>
+                        <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="9">
+                            <span class="font-bold">Day 6: Jul 09</span>
+                            <div class="text-xs text-gray-400 mt-0.5">To Canyon Lodge</div>
                         </button>
-                    </div>
-                </div>
-
-                <!-- Map -->
-                <div class="lg:col-span-2">
+                        <button class="dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all hover:bg-gray-700" data-day="11">
+                            <span class="font-bold">Day 7: Jul 11</span>
+                            <div class="text-xs text-gray-400 mt-0.5">Return to SLC & Fly Home</div>
                     <div id="map" class="w-full h-96 md:h-[450px] bg-gray-900/50 border border-gray-700 rounded-xl shadow-lg"></div>
                     
                     <!-- Route Legend -->
@@ -159,12 +157,12 @@
             <!-- Day Details Card -->
             <div class="mt-6 p-6 bg-gray-900/50 rounded-xl border border-gray-700">
                 <div id="dayDetails" class="space-y-3">
-                    <h3 class="font-bold text-base text-amber-400">Sunday, July 5 - Flight Day</h3>
+                    <h3 class="font-bold text-base text-amber-400">Friday, July 5 - Flight & Drive Day</h3>
                     <ul class="space-y-2 text-sm text-gray-300">
                         <li class="flex gap-2"><span class="text-amber-400">•</span> 12:33 PM - Depart Oakland (OAK) on Delta DL 4134</li>
                         <li class="flex gap-2"><span class="text-amber-400">•</span> 3:29 PM - Arrive Salt Lake City (SLC), 1h 56m flight</li>
-                        <li class="flex gap-2"><span class="text-amber-400">•</span> 4:30 PM - Pickup Midsize SUV (Hertz) at SLC Terminal</li>
-                        <li class="flex gap-2"><span class="text-amber-400">•</span> 7:45 PM - Check-in Holiday Inn Express, Idaho Falls</li>
+                        <li class="flex gap-2"><span class="text-amber-400">•</span> 4:30 PM - Pickup Midsize SUV at SLC Terminal</li>
+                        <li class="flex gap-2"><span class="text-amber-400">•</span> 7:45 PM - Check-in Holiday Inn Express, Idaho Falls (220 mi, 3h 15m)</li>
                     </ul>
                 </div>
             </div>
@@ -410,42 +408,52 @@
         // Day-wise details
         const dayDetails = {
             '5': {
-                title: 'Sunday, July 5 - Flight Day',
+                title: 'Friday, July 5 - Flight & Drive Day',
                 details: [
                     '12:33 PM - Depart Oakland (OAK) on Delta DL 4134',
                     '3:29 PM - Arrive Salt Lake City (SLC), 1h 56m flight',
-                    '4:30 PM - Pickup Midsize SUV (Hertz) at SLC Terminal',
-                    '7:45 PM - Check-in Holiday Inn Express, Idaho Falls'
+                    '4:30 PM - Pickup Midsize SUV at SLC Terminal',
+                    '~7:45 PM - Check-in Holiday Inn Express, Idaho Falls (220 mi, 3h 15m drive)'
                 ]
             },
             '6': {
-                title: 'Monday, July 6 - Drive to Yellowstone',
+                title: 'Saturday, July 6 - Drive to Grant Village',
                 details: [
                     '8:00 AM - Check-out from Idaho Falls hotel',
                     '11:00 AM - Arrive at Yellowstone South Entrance',
-                    '12:00 PM - Drive through Grant Village area',
+                    '12:30 PM - Arrive at Grant Village (~110 mi, 2h from Idaho Falls)',
                     '2:30 PM - Check-in Grant Village Lodges',
-                    'Evening - Explore nearby geysers and hot springs'
+                    'Explore the south loop and thermal features'
                 ]
             },
             '6-9': {
-                title: 'July 6-9 - Grant Village Base Operations',
+                title: 'July 6-9 - Grant Village Base (3 Days)',
                 details: [
-                    'Days at Grant Village - South Loop Yellowstone base',
-                    'Explore Old Faithful, Norris Geyser Basin',
-                    'Visit Midway Geyser Basin and Grand Prismatic Spring',
-                    'Hike various trails and scenic viewpoints',
-                    'Wildlife viewing and photography opportunities'
+                    'Base: Grant Village Lodges (South Loop)',
+                    'Explore Old Faithful and surrounding geysers',
+                    'Visit Norris Geyser Basin and thermal areas',
+                    'Midway Geyser Basin and Grand Prismatic Spring',
+                    'Hiking, wildlife viewing, scenic photography'
                 ]
             },
-            '9-11': {
-                title: 'July 9-11 - Canyon Village & Return',
+            '9': {
+                title: 'Thursday, July 9 - Transfer to Canyon Lodge',
                 details: [
-                    'Transfer from Grant Village to Canyon Village',
-                    'Canyon Village - North/Central Yellowstone base',
-                    'Visit Grand Canyon of the Yellowstone',
-                    'Explore Artist Point and scenic drives',
-                    'July 11 - Exit park, drive to SLC, Flight home'
+                    '9:00 AM - Check-out Grant Village',
+                    '10:15 AM - Arrive Canyon Village (~40 mi, 1h 15m drive)',
+                    '12:00 PM - Check-in Canyon Lodge & Cabins',
+                    'Afternoon - Visit Grand Canyon of the Yellowstone',
+                    'Artist Point and scenic overlooks'
+                ]
+            },
+            '11': {
+                title: 'Saturday, July 11 - Return Journey',
+                details: [
+                    '8:00 AM - Check-out Canyon Lodge',
+                    '10:30 AM - Exit Yellowstone North/West entrance',
+                    '1:30 PM - Arrive Salt Lake City airport (~160 mi, 3h 30m)',
+                    '6:25 PM - Depart SLC on Southwest WN 3276',
+                    '7:15 PM - Arrive Oakland (OAK), End of trip'
                 ]
             }
         };
@@ -520,44 +528,79 @@
         // Show day-specific movements
         function showDay(day) {
             clearMapLayers();
+            let bounds = L.latLngBounds();
 
             if (day === '5') {
-                // Flight from OAK to SLC
+                // July 5: Flight OAK to SLC, then drive to Idaho Falls
                 createMarker(locations.oak);
                 createMarker(locations.slc);
+                createMarker(locations.idaho);
+                
                 drawAnimatedRoute(locations.oak, locations.slc, '#0EA5E9', 2);
-            } else if (day === '6') {
-                // Drive from SLC to Idaho Falls to Yellowstone
-                createMarker(locations.slc);
+                setTimeout(() => {
+                    drawAnimatedRoute(locations.slc, locations.idaho, '#F59E0B', 2);
+                }, 1500);
+                
+                bounds.extend([locations.oak.lat, locations.oak.lng]);
+                bounds.extend([locations.slc.lat, locations.slc.lng]);
+                bounds.extend([locations.idaho.lat, locations.idaho.lng]);
+            } 
+            else if (day === '6') {
+                // July 6: Idaho Falls to Grant Village
                 createMarker(locations.idaho);
                 createMarker(locations.grant, true);
-                drawAnimatedRoute(locations.slc, locations.idaho, '#F59E0B', 2);
-                setTimeout(() => {
-                    drawAnimatedRoute(locations.idaho, locations.grant, '#10B981', 2);
-                }, 1000);
-            } else if (day === '6-9') {
-                // Base at Grant Village
+                drawAnimatedRoute(locations.idaho, locations.grant, '#10B981', 2);
+                
+                bounds.extend([locations.idaho.lat, locations.idaho.lng]);
+                bounds.extend([locations.grant.lat, locations.grant.lng]);
+            } 
+            else if (day === '6-9') {
+                // July 6-9: Grant Village base (local exploration)
                 createMarker(locations.grant, true);
-                // Show local movements
-                const nearbyPoints = [
-                    { lat: 44.3, lng: -110.8, name: 'Nearby Attraction' },
-                    { lat: 44.5, lng: -110.9, name: 'Geyser Basin' }
+                bounds.extend([locations.grant.lat, locations.grant.lng]);
+                // Show nearby attractions
+                const nearby = [
+                    { lat: 44.35, lng: -110.75 },
+                    { lat: 44.5, lng: -110.9 }
                 ];
-                nearbyPoints.forEach((pt, idx) => {
+                nearby.forEach((pt, idx) => {
                     setTimeout(() => {
-                        drawAnimatedRoute(locations.grant, pt, '#10B981', 1.5);
+                        drawAnimatedRoute(locations.grant, pt, '#10B981', 1);
+                        bounds.extend([pt.lat, pt.lng]);
                     }, idx * 800);
                 });
-            } else if (day === '9-11') {
-                // Transfer to Canyon and return
+            } 
+            else if (day === '9') {
+                // July 9: Grant Village to Canyon Lodge
                 createMarker(locations.grant);
                 createMarker(locations.canyon, true);
-                createMarker(locations.slc);
                 drawAnimatedRoute(locations.grant, locations.canyon, '#A855F7', 2);
+                
+                bounds.extend([locations.grant.lat, locations.grant.lng]);
+                bounds.extend([locations.canyon.lat, locations.canyon.lng]);
+            } 
+            else if (day === '11') {
+                // July 11: Canyon to SLC and return flight
+                createMarker(locations.canyon);
+                createMarker(locations.slc);
+                createMarker(locations.oak);
+                
+                drawAnimatedRoute(locations.canyon, locations.slc, '#E879F9', 2);
                 setTimeout(() => {
-                    drawAnimatedRoute(locations.canyon, locations.slc, '#0EA5E9', 2);
-                }, 2500);
+                    drawAnimatedRoute(locations.slc, locations.oak, '#0EA5E9', 2);
+                }, 1500);
+                
+                bounds.extend([locations.canyon.lat, locations.canyon.lng]);
+                bounds.extend([locations.slc.lat, locations.slc.lng]);
+                bounds.extend([locations.oak.lat, locations.oak.lng]);
             }
+
+            // Fit map to bounds with padding
+            setTimeout(() => {
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 8 });
+                }
+            }, 100);
 
             // Update day details
             updateDayDetails(day);
