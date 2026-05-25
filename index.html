@@ -193,7 +193,7 @@
                 </div>
             </div>
 
-            <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-4 md:col-span-2 lg:col-span-1">
+            <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-4">
                 <h2 class="font-bold text-base tracking-tight flex items-center gap-3"><i class="fa-solid fa-hotel text-emerald-400"></i>Lodging Accommodations</h2>
                 <div class="space-y-3">
                     <div class="text-[11px] border-l-2 border-amber-500 pl-3">
@@ -209,6 +209,23 @@
                         <p class="text-gray-400 mt-0.5">Jul 09 – Jul 11 • Deluxe Room 2 Queens</p>
                     </div>
                 </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl p-6 space-y-4 md:col-span-2 lg:col-span-3">
+                <h2 class="font-bold text-base tracking-tight flex items-center gap-3">
+                    <i class="fa-solid fa-basket-shopping text-amber-500"></i>Trip Shopping & Supply List
+                </h2>
+                <p class="text-xs text-gray-400">Manage trip items live. Changes are preserved automatically inside this browser session.</p>
+                
+                <form id="shoppingForm" class="flex gap-2">
+                    <input type="text" id="itemInput" required placeholder="Add item (e.g., Bear Spray, Trail Mix...)" class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors">
+                    <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-2 rounded-xl text-sm transition-colors flex items-center gap-1">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </form>
+
+                <ul id="shoppingList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                    </ul>
             </div>
         </div>
     </main>
@@ -273,6 +290,7 @@
             '11': { title: 'Saturday, July 11 - Exit Loop Route Home', details: ['8:00 AM - Check out Canyon Lodge, backtrace the highway grid out through west entrance boundaries', '1:30 PM - Return vehicle asset to SLC airport terminal infrastructure lots', '6:25 PM - Depart SLC via Southwest WN 3276 back to OAK'] }
         };
 
+        // --- MAP ENGINE ---
         const map = L.map('map').setView([42.5, -111.5], 6);
         L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 13, opacity: 0.95 }).addTo(map);
 
@@ -325,6 +343,59 @@
             L.marker([loc.lat, loc.lng], { icon: L.divIcon({ html: el.outerHTML, iconSize: [30, 30], className: 'c-mark' }) }).bindPopup(loc.name).addTo(map);
         }
 
+        // --- SHOPPING LIST CONTROLLER (LOCALSTORAGE API) ---
+        let items = JSON.parse(localStorage.getItem('yellowstone_items')) || [
+            { text: 'Bear Spray', checked: false },
+            { text: 'Binoculars', checked: false },
+            { text: 'High SPF Sunscreen', checked: true }
+        ];
+
+        const shoppingForm = document.getElementById('shoppingForm');
+        const itemInput = document.getElementById('itemInput');
+        const shoppingList = document.getElementById('shoppingList');
+
+        function saveAndRenderItems() {
+            localStorage.setItem('yellowstone_items', JSON.stringify(items));
+            shoppingList.innerHTML = '';
+            
+            items.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = `flex items-center justify-between p-3 rounded-xl border transition-all ${item.checked ? 'bg-gray-900/20 border-gray-800 text-gray-500 line-through' : 'bg-gray-900/60 border-gray-700 text-gray-200'}`;
+                
+                li.innerHTML = `
+                    <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="toggleItem(${index})">
+                        <i class="fa-regular ${item.checked ? 'fa-circle-check text-emerald-500' : 'fa-circle text-gray-600'} text-lg"></i>
+                        <span class="text-sm font-medium tracking-wide break-all">${item.text}</span>
+                    </div>
+                    <button onclick="removeItem(${index})" class="text-gray-500 hover:text-red-400 p-1 transition-colors">
+                        <i class="fa-solid fa-trash-can text-sm"></i>
+                    </button>
+                `;
+                shoppingList.appendChild(li);
+            });
+        }
+
+        shoppingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = itemInput.value.trim();
+            if (text) {
+                items.push({ text, checked: false });
+                itemInput.value = '';
+                saveAndRenderItems();
+            }
+        });
+
+        window.toggleItem = function(index) {
+            items[index].checked = !items[index].checked;
+            saveAndRenderItems();
+        };
+
+        window.removeItem = function(index) {
+            items.splice(index, 1);
+            saveAndRenderItems();
+        };
+
+        // --- LAYOUT & ACTIONS BINDINGS ---
         document.querySelectorAll('.dayBtn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.dayBtn').forEach(b => b.className = "dayBtn w-full text-left px-4 py-3 rounded-lg border border-gray-600 bg-gray-900/30 text-gray-300 font-semibold text-sm transition-all");
@@ -334,7 +405,6 @@
         });
 
         document.getElementById('resetMapBtn').addEventListener('click', () => document.querySelector('[data-day="5"]').click());
-        window.addEventListener('load', () => setTimeout(() => document.querySelector('[data-day="5"]').click(), 200));
         window.addEventListener('resize', () => map.invalidateSize());
 
         document.getElementById('fullscreenBtn').addEventListener('click', () => {
@@ -355,6 +425,12 @@
                 this.classList.add('active');
                 showDay(this.dataset.day);
             });
+        });
+
+        // Init Setup
+        window.addEventListener('load', () => {
+            saveAndRenderItems();
+            setTimeout(() => document.querySelector('[data-day="5"]').click(), 200);
         });
     </script>
 </body>
